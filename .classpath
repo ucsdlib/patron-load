@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/jar_repository/castor.jar"/>
+	<classpathentry kind="lib" path="/jar_repository/checkstyle.jar"/>
+	<classpathentry kind="lib" path="/jar_repository/dtd_parser.jar"/>
+	<classpathentry kind="lib" path="/jar_repository/james.jar"/>
+	<classpathentry kind="lib" path="/jar_repository/jconn.jar"/>
+	<classpathentry kind="lib" path="/jar_repository/jdom.jar"/>
+	<classpathentry kind="lib" path="/jar_repository/jox.jar"/>
+	<classpathentry kind="lib" path="/jar_repository/library_package.jar"/>
+	<classpathentry kind="lib" path="/jar_repository/log4j.jar"/>
+	<classpathentry kind="lib" path="/jar_repository/lucene.jar"/>
+	<classpathentry kind="lib" path="/jar_repository/marc4j.jar"/>
+	<classpathentry kind="lib" path="/jar_repository/oracle_drivers.jar"/>
+	<classpathentry kind="lib" path="/jar_repository/oracle-9.2.0.3.jar"/>
+	<classpathentry kind="lib" path="/jar_repository/pgjdbc2.jar"/>
+	<classpathentry kind="lib" path="/jar_repository/pmd.jar"/>
+	<classpathentry kind="lib" path="/jar_repository/servlet.jar"/>
+	<classpathentry kind="lib" path="/jar_repository/tamino.jar"/>
+	<classpathentry kind="lib" path="/jar_repository/taminoclient.jar"/>
+	<classpathentry kind="lib" path="/jar_repository/teratext.jar"/>
+	<classpathentry kind="lib" path="/jar_repository/xerces.jar"/>
+	<classpathentry kind="src" path="/library_package"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

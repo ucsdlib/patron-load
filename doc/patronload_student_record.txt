@@ -1,0 +1,48 @@
+Format of a student record (fields separated by tabs)
+------------------------------------------------------------------------
+1. PID (student ID)
+2. Name (last, first, mi)
+3. Social Security Number
+4. Registration status code (i.e. RG)
+5. Quarter last enrolled (i.e. WI03)
+6. Academic level (i.e. 'G' for grad)
+7. Major code (i.e. CS75)
+8. Address type (i.e. 'PM'=permanent address, 'CM'=current address)
+9. Address start date (i.e. '960427' for 04-27-1999)
+10. Address stop date (i.e. '960427' for 04-27-1999)
+11. Address line 1
+12. Address line 2
+13. Address line 3
+14. Address line 4
+15. City
+16. Area code
+17. Exchange code
+18. Extension
+19. State
+20. Zip code
+21. Country code
+
+
+------------------ADMN_[G/P] TABLE----------------------------
+1. PID9
+2. STUDENT_NAME
+3. SSN
+4. APCT_DECN (note: leave blank, but must check to see this is 'acc')???
+5. ADMIT_TERM
+6. STUDENT_LEV (=GR -> 'G' for grad. double check with Greg)??
+7. MAJOR_CODE
+------------------STAD_[G/P] TABLE----------------------------
+8. ADDR_TYPE
+9. START_DATE  --why not hilighted?
+10. END_DATE   --why not hilighted again?
+11. LINE_ADR1
+12. LINE_ADR2
+13. LINE_ADR3
+14. LINE_ADR4
+15. CITY_NAME
+16. AREA_CODE
+17. XCHNG_ID
+18. SEQ_ID
+19. STATE_CO
+20. ZIP_CODE
+21. CNTRY_CO --why not hilighted??
