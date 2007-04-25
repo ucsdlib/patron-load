@@ -781,8 +781,24 @@ public class fullquery_employee {
 			System.exit(1);
 		}
 
+		
+		String db2Driver = (String) original.get("db2driver");
+		String db2Username = (String) original.get("db2username");
+		String db2Password = (String) original.get("db2password");
+		String db2Connection = (String) original.get("db2connection");
+		
+		
+		try {
+			Class.forName(db2Driver).newInstance();
+		} catch (Exception E) {
+			System.err.println("Error: Unable to load db2 driver: " + db2Driver);
+			E.printStackTrace();
+			System.exit(1);
+		}
+		
 		Statement stmt = null;
 		Connection conn = null;
+		Connection db2Conn = null;
 		ResultSet rs = null;
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmtPhone = null;
@@ -790,10 +806,34 @@ public class fullquery_employee {
 		String currentDate = format.format(new java.util.Date());
 		ResultSet emailRS = null;
 		ResultSet phoneRS = null;
+		ResultSet barcodeRS = null;
 		Map employeeMap = null;
 		Map employeePhone = null;
+		Map employeeBarcode = null;
+
 		try {
 
+			db2Conn = DriverManager.getConnection(
+					db2Connection,
+					db2Username,
+					db2Password);
+/*			
+			String queryTest = "SELECT emb_employee_name " +
+					"FROM employee.p_employee_fin_view " +
+					"WHERE emb_employee_name like 'CHU, V%'";
+			
+			pstmt = db2Conn.prepareStatement(queryTest);
+			System.out.println("start");
+			emailRS = pstmt.executeQuery();		
+			
+			while (emailRS.next()) {	
+				System.out.println((String)emailRS.getString(1));			
+			}
+			
+			db2Conn.close();
+			pstmt = null;
+			emailRS = null;*/
+			
 			// Used TLI to IP/Port Converter to get IP and port
 			// http://www.outlands.demon.co.uk/utilities/tli2ip.html
 			// TLI: \x000207e984efb4080000000000000000
@@ -802,7 +842,8 @@ public class fullquery_employee {
 					dbConnection,
 					dbUsername,
 					dbPassword);
-			stmt = conn.createStatement();
+			stmt = db2Conn.createStatement();
+			//stmt = conn.createStatement();
 
 			String query =
 				"SELECT DISTINCT "
@@ -815,7 +856,59 @@ public class fullquery_employee {
 					+ "p1.app_department_code DEPT_CODE, "
 					+ "p1.app_department_name, "
 					+ "p.emp_student_status_code, "
-					+ "p.emp_mailcode MAIL_CODE," 
+					+ "ph.employee_mail_code MAIL_CODE, " 
+					+ "ph.employee_office_phone PHONE, " 
+					+ "ph.employee_email EMAIL, " 
+					//+ "v.barcode BARCODE, " 
+					+ "p.emb_employee_id, "
+					+ "p2.dis_end_date " 
+					+ " FROM " 
+					+ " employee.p_employee_fin_view p LEFT OUTER JOIN phone.employee ph "
+					+ " ON ph.emb_employee_number = p.emb_person_id , "
+					//+ " LEFT JOIN idcard_db.dbo.idcard_v v "
+					//+ " ON p.emb_employee_id = v.employee_id, "
+					+ " employee.p_appointment p1, "  
+					+ " employee.p_distribution p2 "
+					+ " WHERE " 
+					+ " ("
+					+ "((p.emp_student_status_code IN (" + EMP_STUDENT_STATUS_CODE + ")) OR "
+                    + "((p.emp_student_status_code = '4') AND (p1.app_title_code IN (" + STUDENT_STAFF_TITLE_CODES + ")) )) "
+
+                    // if title code=4011, download only if status code = 1
+                    + "AND ((p1.app_title_code <> '4011') OR ((p1.app_title_code = '4011') AND (p.emp_student_status_code = '1'))) "
+					
+                    + "AND (p1.emb_person_id = p.emb_person_id) "
+					+ "AND (p2.emb_person_id = p.emb_person_id) "
+					+ "AND (p2.app_appointment_number = p1.app_appointment_number) "
+					
+					+ (total==false ?
+						
+						 "AND ((p.emp_employment_status_code NOT IN (" + BLOCKED_STATUS_CODES + ")) "
+							
+						 + "AND ((p.emp_employment_status_code NOT IN (" + SEPARATED_CODES + ")) OR " +
+						//--if Emeritus, download record if separated						
+						 "(p1.app_title_code IN (" + EMERITUS_TITLE_CODES + "))" + 
+
+						")) " : "")
+					
+					+ ") ORDER BY EMPID, p.emb_employee_name ";
+
+			
+			
+			/*
+			String query =
+				"SELECT DISTINCT "
+					+ "p.emb_person_id EMPID, "
+					+ "p.emb_employee_name NAME, "
+					+ "p.emp_employment_status_code, "
+					+ "p.emp_student_status_code, "
+					+ "p1.app_title_code TITLE_CODE, "
+					+ "p1.app_title_name, "
+					+ "p1.app_department_code DEPT_CODE, "
+					+ "p1.app_department_name, "
+					+ "p.emp_student_status_code, "
+					//+ "p.emp_mailcode MAIL_CODE," 
+					+ "ph.employee_mail_code MAIL_CODE," 
 					+ " ph.employee_office_phone PHONE" 
 					+ ", ph.employee_email EMAIL " 
 					+ ", v.barcode BARCODE " 
@@ -849,8 +942,8 @@ public class fullquery_employee {
 
 						")) " : "")
 					
-					+ ") ORDER BY EMPID, p.emb_employee_name ";
-
+					+ ") ORDER BY EMPID, p.emb_employee_name "; */
+			
 			//System.out.println("query" + query);
 			
 			//try {
@@ -893,13 +986,39 @@ public class fullquery_employee {
 			phoneRS = null;
 			pstmtPhone = null;
 			
-/*			for (Iterator it = employeeMap.entrySet().iterator(); it.hasNext();) {
+			String barcodeQuery = "select distinct v.employee_id, " +
+					"v.barcode from idcard_db.dbo.idcard_v v";
+			employeeBarcode = new HashMap();
+			
+			pstmt = conn.prepareStatement(barcodeQuery);
+			
+			barcodeRS = pstmt.executeQuery();		
+			String barcodeVal = null;
+			String keyVal = null;
+			while (barcodeRS.next()) {	
+				keyVal = (String)barcodeRS.getString(1);
+				barcodeVal = (String)barcodeRS.getString(2);
+
+
+		        //System.out.println("barcodeVal:"+barcodeVal+"----"+barcodeVal.length());
+				
+		        if(keyVal != null && barcodeVal != null)
+		        	employeeBarcode.put(keyVal.trim(), barcodeVal.trim());	
+		
+			}
+			barcodeRS = null;
+			pstmt = null;
+			
+			//String key;
+			
+			/*
+			for (Iterator it = employeeBarcode.entrySet().iterator(); it.hasNext();) {
 				Map.Entry entry = (Map.Entry) it.next();
-				key = (String)entry.getKey();
-				if(key.equals("145219")) {
-					System.out.println(key + " value : "+entry.getValue());
-				}
-			}	*/	
+				//key = (String)entry.getKey();
+				
+				System.out.println(entry.getKey() + " value : "+entry.getValue());
+				
+			}*/
 			
 			rs = stmt.executeQuery(query);
 			
@@ -915,7 +1034,7 @@ public class fullquery_employee {
 			String empId = null;
 			//Date dateCol = null;
 			//boolean isBefore;
-			
+			String employeeId = null;
 			while (rs.next()) {
 				newId = rs.getString(1);
 	
@@ -947,7 +1066,7 @@ public class fullquery_employee {
 
 							StringBuffer writeOut = new StringBuffer();
 							empId = (String)parseRecord(tmp, 0);
-							
+
 							//write out the employee ID
 							writeOut.append(parseRecord(tmp, 0) + "\t");
 							
@@ -1040,15 +1159,32 @@ public class fullquery_employee {
 							}		
 							
 							//write out the barcode
+							/*
 							if(parseRecord(tmp, 12) != null && parseRecord(tmp, 12).length() > 0)
 								writeOut.append(parseRecord(tmp, 12));
 							else
 								writeOut.append("none");
+							*/
 
+							employeeId = (String)parseRecord(tmp, 12, false);
+							
+							//System.out.println("employeeId:"+employeeId + " -- "+empId + 
+								//	"..."+parseRecord(tmp, 12, false));
+							
+							if(employeeId != null && employeeBarcode.containsKey(employeeId) && 
+									employeeBarcode.get(employeeId) != null
+									&& ((String)employeeBarcode.get(employeeId)).length() > 0) {
+								//System.out.println("hey: "+(String)employeeBarcode.get(employeeId));
+								writeOut.append((String)employeeBarcode.get(employeeId));	
+							} else {
+								writeOut.append("none");
+								//System.out.println("this one has no barcode:"+employeeId);
+							}
 				
 							
 							pw.write(writeOut.toString() + "\n");
-							empId = null;							
+							empId = null;		
+							employeeId = null;
 						}
 						
 					} else {
@@ -1126,8 +1262,11 @@ public class fullquery_employee {
 					pstmt.close();
 				if (pstmtPhone != null)
 					pstmtPhone.close();
+				if (db2Conn != null)
+					db2Conn.close();
 				employeeMap = null;
 				employeePhone = null;
+				employeeBarcode = null;
 			} catch (SQLException e) {
 			}
 		}
