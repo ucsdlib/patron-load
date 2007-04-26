@@ -21,6 +21,9 @@
     <fileset dir="./src/lib" id="jars">
         <include name="*.jar"/>
     </fileset>
+    <fileset dir="${jars.home}" id="jars">
+        <include name="library_package.jar"/>
+    </fileset>
 	<pathelement location="${build}/classes"/>
 </path> 
 	
@@ -28,7 +31,6 @@
  
  <fileset dir="${jars.home}" id="jars">
   
-  <include name="library_package.jar"/>
   <include name="pmd.jar"/>
   <include name="checkstyle.jar"/>
   
