@@ -7,7 +7,7 @@
 <web-app>
   <context-param>
     <param-name>marcFilePath</param-name>
-    <param-value>/pub/data1/import/htdocs/patronload/</param-value>
+    <param-value>/pub/data1/import/patronload/</param-value>
     <!--param-value>C:\\vivian\\patronload\\</param-value-->
     <description>Path where marc files are written</description>
   </context-param>
