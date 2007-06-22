@@ -88,7 +88,7 @@
     <!--***************************************************************-->
 
     <javac debug="${compile.debug}" deprecation="${compile.deprecation}" 
-        destdir="${build}/classes" srcdir="${filtered}/java">
+        destdir="${build}/classes" srcdir="${filtered}/java" target="1.5">
         <classpath refid="classpath"/>
 
         <classpath>
