@@ -18,6 +18,8 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.naming.InitialContext;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -68,7 +70,17 @@ public class scheduler extends HttpServlet {
 		String contextDir =
 			conf.getServletContext().getRealPath("") + File.separator;
 		
-		marcFilesDir = ctx.getInitParameter("marcFilePath");
+		String sharedPath = "";
+		try
+		{
+			InitialContext jndi = new InitialContext();
+			sharedPath = (String)jndi.lookup("java:comp/env/clusterSharedPath");
+		}
+		catch ( Exception ex )
+		{
+			sharedPath = "";
+		}
+		marcFilesDir = sharedPath + ctx.getInitParameter("marcFilePath");
 		incquery.setMarcFilesDir(marcFilesDir);
 	    fullquery.setMarcFilesDir(marcFilesDir);	
 		System.out.println(

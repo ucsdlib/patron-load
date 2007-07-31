@@ -1,0 +1,9 @@
+<jboss-web>
+  <resource-ref>
+    <res-ref-name>clusterSharedPath</res-ref-name>
+    <jndi-name>java:/env/clusterSharedPath</jndi-name>
+  </resource-ref>
+<!-- XXX: should use shared auth instead of homebrew auth system
+  <security-domain>java:/jaas/library-login-module</security-domain>
+-->
+</jboss-web>

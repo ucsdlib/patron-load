@@ -1,4 +1,4 @@
-<%@ page import="java.io.*, java.util.*, edu.ucsd.library.util.*"%>
+<%@ page import="java.io.*, java.util.*, javax.naming.*, edu.ucsd.library.util.*"%>
 <%@ page errorPage="error_pages/error.jsp" %>
 
 <jsp:useBean id="patronLoad" class="edu.ucsd.library.patronload.beans.patronload_bean" scope="session"/>
@@ -14,7 +14,17 @@
 	
 	String webinfDir = contextDir + "WEB-INF" + File.separator;
 	
-	String marcFilePath = application.getInitParameter("marcFilePath");
+	InitialContext jndi = new InitialContext();
+	String sharedPath = "";
+	try
+	{
+		sharedPath = (String)jndi.lookup("java:comp/env/clusterSharedPath");
+	}
+	catch ( Exception ex )
+	{
+		sharedPath = "";
+	}
+	String marcFilePath = sharedPath + application.getInitParameter("marcFilePath");
 
 	patronLoad.setPathToProperties(webinfDir + "patron_load.properties");
 	

@@ -1,10 +1,20 @@
-<%@page import="java.io.*,java.sql.*,java.util.*,edu.ucsd.library.util.*"%>
+<%@page import="java.io.*,java.sql.*,java.util.*,javax.naming.*,edu.ucsd.library.util.*"%>
 <%
 	try
 	{
 		// write files
+		InitialContext jndi = new InitialContext();
+		String sharedPath = "";
+		try
+		{
+			sharedPath = (String)jndi.lookup("java:comp/env/clusterSharedPath");
+		}
+		catch ( Exception ex )
+		{
+			sharedPath = "";
+		}
 		File outputDir = new File(
-			application.getInitParameter("marcFilePath")
+			sharedPath + application.getInitParameter("marcFilePath")
 		);
 		if ( !outputDir.exists() || !outputDir.isDirectory() || !outputDir.canWrite() )
 		{

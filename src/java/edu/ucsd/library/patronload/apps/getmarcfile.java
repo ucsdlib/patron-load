@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import javax.naming.InitialContext;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -20,8 +22,18 @@ public class getmarcfile extends HttpServlet {
 	private String marcFilesDir;
 	
 	public void init(ServletConfig conf) throws ServletException {		
+		String sharedPath = "";
+		try
+		{
+			InitialContext jndi = new InitialContext();
+			sharedPath = (String)jndi.lookup("java:comp/env/clusterSharedPath");
+		}
+		catch ( Exception ex )
+		{
+			sharedPath = "";
+		}
 		ServletContext ctx = conf.getServletContext();
-		marcFilesDir = ctx.getInitParameter("marcFilePath");
+		marcFilesDir = sharedPath + ctx.getInitParameter("marcFilePath");
 		super.init(conf);		
 	}
 
