@@ -163,6 +163,7 @@
         <fileset dir="${src}/graphics"/>
         <classes dir="${build}/classes" />
         <webinf dir="${filtered}/webinf" excludes="web.xml" />
+        <metainf dir="${filtered}/metainf"/>
     </war>
 </target>
 
@@ -183,6 +184,7 @@
         <fileset dir="${src}/graphics"/>
         <classes dir="${build}/classes" />
         <webinf dir="${filtered}/webinf" excludes="web.xml" />
+        <metainf dir="${filtered}/metainf"/>
         <!--lib refid="jars" /-->
         <lib dir="./src/lib">
             <exclude name="servlet.jar"/>
