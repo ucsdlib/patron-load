@@ -21,7 +21,7 @@
 		{
 			sharedPath = "";
 		}
-		String marcFilesDir =  application.getInitParameter("marcFilePath");
+		String marcFilesDir =  sharedPath + application.getInitParameter("marcFilePath");
 
 		for (Enumeration en=request.getParameterNames(); en.hasMoreElements();) {
 			    String name = (String)en.nextElement();
