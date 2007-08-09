@@ -79,6 +79,7 @@ public class scheduler extends HttpServlet {
 		catch ( Exception ex )
 		{
 			sharedPath = "";
+			ex.printStackTrace();
 		}
 		marcFilesDir = sharedPath + ctx.getInitParameter("marcFilePath");
 		incquery.setMarcFilesDir(marcFilesDir);
