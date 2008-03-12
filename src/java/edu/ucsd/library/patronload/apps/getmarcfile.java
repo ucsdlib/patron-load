@@ -22,6 +22,7 @@ public class getmarcfile extends HttpServlet {
 	private String marcFilesDir;
 	
 	public void init(ServletConfig conf) throws ServletException {		
+		/*
 		String sharedPath = "";
 		try
 		{
@@ -30,11 +31,13 @@ public class getmarcfile extends HttpServlet {
 		}
 		catch ( Exception ex )
 		{
-			sharedPath = "";
+			sharedPath = "/pub/data1/import/htdocs";
 		}
+		*/
 		ServletContext ctx = conf.getServletContext();
-		marcFilesDir = sharedPath + ctx.getInitParameter("marcFilePath");
-		super.init(conf);		
+		//marcFilesDir = sharedPath + ctx.getInitParameter("marcFilePath");
+		marcFilesDir = ctx.getInitParameter("marcFilePath");
+		super.init(conf);	
 	}
 
 	public void service(HttpServletRequest req, HttpServletResponse res)
