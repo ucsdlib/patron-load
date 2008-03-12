@@ -80,7 +80,7 @@ public class incquery {
      *            Path to the file to write results to
      */
     public static void grabData(String pathToProperties, String fileToWrite) {
-
+    	System.out.println("incquery:"+pathToProperties);
         PrintWriter pw = null;
 
         //--support a collection of 300,000 students
