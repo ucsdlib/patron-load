@@ -11,7 +11,7 @@
 		}
 		catch ( Exception ex )
 		{
-			sharedPath = "";
+			sharedPath = "/pub/data1/import/htdocs";
 		}
 		File outputDir = new File(
 			sharedPath + application.getInitParameter("marcFilePath")
