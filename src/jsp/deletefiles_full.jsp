@@ -12,6 +12,7 @@
 		String webinfDir = patronLoad.getContextDir() + "WEB-INF" + File.separator;
 		//String marcFilesDir =  webinfDir + File.separator + "marc_files" + File.separator;
 		InitialContext jndi = new InitialContext();
+		/*
 		String sharedPath = "";
 		try
 		{
@@ -19,10 +20,13 @@
 		}
 		catch ( Exception ex )
 		{
-			sharedPath = "";
+			sharedPath = "/pub/data1/import/htdocs";
 		}
 		String marcFilesDir =  sharedPath + application.getInitParameter("marcFilePath");
-
+		*/
+		
+		String marcFilesDir =  application.getInitParameter("marcFilePath");
+		
 		for (Enumeration en=request.getParameterNames(); en.hasMoreElements();) {
 			    String name = (String)en.nextElement();
 			    String value = request.getParameter(name);
