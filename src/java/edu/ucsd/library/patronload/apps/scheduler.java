@@ -50,16 +50,20 @@ public class scheduler extends HttpServlet {
 				System.out.println("Exception in scheduler.run(): "+e);
 			}
 
-			String appsDir = webinf + File.separator;
+			//String appsDir = webinf + File.separator;
 
 			String[] tmp = new String[2];
 			tmp[0] = marcFilesDir;
-			tmp[1] = appsDir;
+			//tmp[1] = appsDir;
+			tmp[1] = marcFilesDir;
 			incquery.setMarcFilesDir(marcFilesDir);
-		    fullquery.setMarcFilesDir(marcFilesDir);			
+		    fullquery.setMarcFilesDir(marcFilesDir);	
+		    System.out.println(
+			"***Patronload Scheduler Status: running Date" + new java.util.Date());
 			edu.ucsd.library.patronload.apps.doinc.main(tmp);
 			// generate the incremental employee marc file 
 			edu.ucsd.library.patronload.apps.doinc_employee.main(tmp);
+			System.out.println("***Patronload Scheduler Status: Done Date" + new java.util.Date());
 		}
 
 	}
@@ -69,7 +73,7 @@ public class scheduler extends HttpServlet {
 		ServletContext ctx = conf.getServletContext();
 		String contextDir =
 			conf.getServletContext().getRealPath("") + File.separator;
-		
+		/*
 		String sharedPath = "";
 		try
 		{
@@ -78,15 +82,19 @@ public class scheduler extends HttpServlet {
 		}
 		catch ( Exception ex )
 		{
-			sharedPath = "";
+			sharedPath = "/pub/data1/import/htdocs";
 			ex.printStackTrace();
 		}
 		marcFilesDir = sharedPath + ctx.getInitParameter("marcFilePath");
+		*/
+		marcFilesDir = ctx.getInitParameter("marcFilePath");
+		System.out.println("filePath:"+marcFilesDir);
 		incquery.setMarcFilesDir(marcFilesDir);
 	    fullquery.setMarcFilesDir(marcFilesDir);	
 		System.out.println(
 			"***Patronload Scheduler running. version date: 2002-07-09");
 		runme(contextDir);
+		System.out.println("***Patronload Scheduler Status: Done");
 	}
 
 	public void runme(String contextDir) {
