@@ -15,6 +15,7 @@
 	String webinfDir = contextDir + "WEB-INF" + File.separator;
 	
 	InitialContext jndi = new InitialContext();
+	/*
 	String sharedPath = "";
 	try
 	{
@@ -22,11 +23,16 @@
 	}
 	catch ( Exception ex )
 	{
-		sharedPath = "";
+		sharedPath = "/pub/data1/import/htdocs";
 	}
 	String marcFilePath = sharedPath + application.getInitParameter("marcFilePath");
-
-	patronLoad.setPathToProperties(webinfDir + "patron_load.properties");
+	*/
+	
+	String marcFilePath = application.getInitParameter("marcFilePath");
+	
+	//patronLoad.setPathToProperties(webinfDir + "patron_load.properties");
+	
+	patronLoad.setPathToProperties(marcFilePath + "patron_load.properties");
 	
 	String pathToProperties = patronLoad.getPathToProperties();
 	
