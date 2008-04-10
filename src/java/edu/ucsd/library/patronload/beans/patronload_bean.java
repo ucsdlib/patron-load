@@ -747,7 +747,8 @@ public class patronload_bean {
     public void doFull() {
         String[] tmp = new String[2];
         tmp[0] = marcFilesDir;
-        tmp[1] = pathToProperties.substring(0, pathToProperties.lastIndexOf(File.separator)+1);
+        //tmp[1] = pathToProperties.substring(0, pathToProperties.lastIndexOf(File.separator)+1);
+        tmp[1] = marcFilesDir;
         edu.ucsd.library.patronload.apps.dofull.main(tmp);
     }
     
@@ -759,7 +760,8 @@ public class patronload_bean {
 		
 		String propsDir = pathToProperties.substring(0, pathToProperties.lastIndexOf(File.separator)+1);
 		tmp[0] = marcFilesDir;
-		tmp[1] = propsDir;
+		//tmp[1] = propsDir;
+		tmp[1] = marcFilesDir;
 		tmp[2] = "true";
 		edu.ucsd.library.patronload.apps.dofull_employee.main(tmp);
 	}
@@ -772,7 +774,8 @@ public class patronload_bean {
 		
 		String propsDir = pathToProperties.substring(0, pathToProperties.lastIndexOf(File.separator)+1);
 		tmp[0] = marcFilesDir;
-		tmp[1] = propsDir;
+		//tmp[1] = propsDir;
+		tmp[1] = marcFilesDir;
 		edu.ucsd.library.patronload.apps.doinc_employee.main(tmp);
 	}
 	
@@ -784,7 +787,8 @@ public class patronload_bean {
 		
 		String propsDir = pathToProperties.substring(0, pathToProperties.lastIndexOf(File.separator)+1);
 		tmp[0] = marcFilesDir;
-		tmp[1] = propsDir;
+		//tmp[1] = propsDir;
+		tmp[1] = marcFilesDir;
 		tmp[2] = "false";
 		edu.ucsd.library.patronload.apps.dofull_employee.main(tmp);
 	}
