@@ -106,7 +106,7 @@ public class fullquery {
             myProp = FileUtils.loadProperties(pathToProperties
                     + "patron_load.properties");
         } catch (IOException ioe) {
-            System.out.println("Error loading properties file!");
+            System.out.println("Error loading properties file in fullquery.getRawData!");
             //System.exit(1);
             return;
         }
@@ -115,6 +115,7 @@ public class fullquery {
         String term = (String) myProp.get("quartercode");
         term = term.trim();
 
+        /*
         String dbDriver = (String) myProp.get("dbdriver");
         dbDriver = dbDriver.trim();
 
@@ -126,11 +127,18 @@ public class fullquery {
 
         String dbConnection = (String) myProp.get("dbconnection");
         dbConnection = dbConnection.trim();
-
+        */
+        
         trm_term_code = "T.trm_term_code = '" + term + "' and ";
         String year = term.substring(2, term.length());
-
-        if (term.toUpperCase().startsWith("SU")) {
+        
+        String db2Driver = (String) myProp.get("db2driver");
+		String db2Username = (String) myProp.get("db2username");
+		String db2Password = (String) myProp.get("db2password");
+		String db2Connection = (String) myProp.get("db2connection");
+		//System.out.println("db2Username:"+db2Username+ " db2Password"+db2Password);
+		//System.out.println("db2Connection:"+db2Connection+ " db2Driver"+db2Driver);
+		if (term.toUpperCase().startsWith("SU")) {
             trm_term_code = "(";
             trm_term_code += "(T.trm_term_code = 'S1" + year + "') or ";
             trm_term_code += "(T.trm_term_code = 'S2" + year + "') or ";
@@ -140,26 +148,61 @@ public class fullquery {
         }
 
         try {
-            Class.forName(dbDriver).newInstance();
+        	Class.forName(db2Driver).newInstance();
+            //Class.forName(dbDriver).newInstance();          
         } catch (Exception E) {
-            System.err.println("Error: Unable to load driver: " + dbDriver);
+            System.err.println("Error: Unable to load driver: " + db2Driver);
             E.printStackTrace();
             System.exit(1);
         }
 
         Statement stmt = null;
-        Connection conn = null;
+        //Connection conn = null;
         ResultSet rs = null;
-
+        Connection db2Conn = null;
+        
         try {
 
+			db2Conn = DriverManager.getConnection(
+					db2Connection,
+					db2Username,
+					db2Password);
+			
             // Used TLI to IP/Port Converter to get IP and port
             // http://www.outlands.demon.co.uk/utilities/tli2ip.html
             // TLI: \x000207e984efb4080000000000000000
-            conn = DriverManager.getConnection(dbConnection, dbUsername,
-                    dbPassword);
-            stmt = conn.createStatement();
+            /*conn = DriverManager.getConnection(dbConnection, dbUsername,
+                    dbPassword);*/
+            stmt = db2Conn.createStatement();
 
+            String query = "select S.stu_pid, S.stu_name,'' as ssn, " +
+            		"T.stt_registration_status_code, '"+ term +"' as last_enrolled, " +
+            		"substr(T.stt_academic_level,1,1) as academic_level, T.maj_major_code, " +
+            		"A.adr_address_type, rtrim(substr(char(year(A.adr_start_date)),3,4)) " +
+            		"concat rtrim(ltrim(char(month(A.adr_start_date)))) concat " +
+            		"rtrim(ltrim(char(day(A.adr_start_date)))) as startdate, " +
+            		"rtrim(substr(char(year(A.adr_end_date)),3,4)) concat " +
+            		"rtrim(ltrim(char(month(A.adr_end_date)))) concat " +
+            		"rtrim(ltrim(char(day(A.adr_end_date)))) as stopdate, " +
+            		"A.adr_address_line_1, A.adr_address_line_2, A.adr_address_line_3, " +
+            		"A.adr_address_line_4, A.adr_city, substr(A.adr_phone,1,3) " +
+            		"as area_code, substr(A.adr_phone,5,3) as exchange, " +
+            		"substr(A.adr_phone,9,4) as sqid, char(' ',4) as extension, " +
+            		"A.adr_state, A.adr_zip, A.co_country_code, E.em_address_line, " +
+            		"I.bar_code from student_db.s_student_term T, " +
+            		"student_db.s_address A, " +
+            		"(student_db.s_student S LEFT OUTER JOIN student_db.s_email E ON " +
+            		"S.stu_pid = E.stu_pid) LEFT OUTER JOIN student_db.s_bar_code I " +
+            		"ON S.stu_pid = I.stu_pid where (S.stu_pid = T.stu_pid) and " +
+            		trm_term_code + " T.stt_major_primary_flag = 'Y' and " +
+            		"T.stu_pid = A.stu_pid and (adr_address_type = 'CM' or " +
+            		"adr_address_type = 'PM') and stt_registration_status_code in " +
+            		"('EN', 'RG') and E.em_address_type = 'EMC' and " +
+            		"E.em_address_line like '%ucsd.edu' and " +
+            		"(E.em_end_date is null or E.em_end_date !< current date) " +
+            		"order by S.stu_pid, A.adr_start_date, A.adr_end_date ";
+
+            /*
             String query = "select "
                     + "S.stu_pid, "
                     + "S.stu_name, "
@@ -207,7 +250,8 @@ public class fullquery {
                     + "(S.stu_pid *= E.stu_pid) and " + "(S.stu_pid *= I.pid) "
 
                     + "order by S.stu_pid, A.adr_start_date, A.adr_end_date ";
-
+            */
+            
             try {
                 //String dir = pathToProperties + "marc_files" + File.separator;
                 FileUtils.confirmDir(marcFilesDir);
@@ -251,8 +295,10 @@ public class fullquery {
                     rs.close();
                 if (stmt != null)
                     stmt.close();
-                if (conn != null)
-                    conn.close();
+                /*if (conn != null)
+                    conn.close();*/
+                if (db2Conn != null)
+					db2Conn.close();
             } catch (SQLException e) {
             }
         }
@@ -279,7 +325,7 @@ public class fullquery {
             myProp = FileUtils.loadProperties(pathToProperties
                     + "patron_load.properties");
         } catch (IOException ioe) {
-            System.out.println("Error loading properties file!");
+            System.out.println("Error loading properties file in fullquery.getAcceptedGrads()!");
             //System.exit(1);
             return;
         }
@@ -288,6 +334,7 @@ public class fullquery {
         term = term.trim();
         String year = term.substring(2);
 
+        /*
         String dbDriver = (String) myProp.get("dbdriver");
         dbDriver = dbDriver.trim();
 
@@ -299,19 +346,26 @@ public class fullquery {
 
         String dbConnection = (String) myProp.get("dbconnection2");
         dbConnection = dbConnection.trim();
-
+        */
+        
+        String db2Driver = (String) myProp.get("db2driver");
+		String db2Username = (String) myProp.get("db2username");
+		String db2Password = (String) myProp.get("db2password");
+		String db2Connection = (String) myProp.get("db2connection");
+		
         String adr_info[] = new String[14];
 
         try {
-            Class.forName(dbDriver).newInstance();
+        	Class.forName(db2Driver).newInstance();
+            //Class.forName(dbDriver).newInstance();
         } catch (Exception E) {
-            System.err.println("Error: Unable to load driver: " + dbDriver);
+            System.err.println("Error: Unable to load driver: " + db2Driver);
             E.printStackTrace();
             System.exit(1);
         }
 
         Statement stmt = null;
-        Connection conn = null;
+        //Connection conn = null;
         ResultSet rs = null;
 
         Statement stmt2 = null;
@@ -320,14 +374,18 @@ public class fullquery {
         String gradType = "";
 
         int iterations = 1;
-
+        Connection db2Conn = null;
+        
         try {
-
-            conn = DriverManager.getConnection(dbConnection, dbUsername,
-                    dbPassword);
+        	db2Conn = DriverManager.getConnection(
+					db2Connection,
+					db2Username,
+					db2Password);
+            //conn = DriverManager.getConnection(dbConnection, dbUsername,
+            //        dbPassword);
             //conn2 = DriverManager.getConnection(dbConnection, dbUsername,
             // dbPassword);
-            stmt = conn.createStatement();
+            stmt = db2Conn.createStatement();
 
 //           will be uncomment on august 16, and july 13
             if (term.toUpperCase().startsWith("SU")) {
@@ -371,13 +429,30 @@ public class fullquery {
                     //term = "S3" + year;
  
                     
-                    String term_admn = "ADMN" + term + gradType;
-                    String term_stad = "STAD" + term + gradType;
+                    String term_admn = "sqldse.ADMN" + term + gradType+"_V";
+                    String term_stad = "sqldse.STAD" + term + gradType;
                     
-
-                    
+                    String query = "select S.PID9, S.STUDENT_NAME, '' as ssn, '' as regStatusCode, " +
+                    		"'" + term + "' as last_enrolled, char(S.STUDENT_LEV,1) as stu_lev, " +
+                    		"S.MAJOR_CODE, A.ADDR_TYPE, rtrim(substr(char(year(A.start_date)),3,4)) " +
+                    		"concat rtrim(ltrim(char(month(A.start_date)))) concat " +
+                    		"rtrim(ltrim(char(day(A.start_date)))) as startdate, " +
+                    		"rtrim(substr(char(year(A.end_date)),3,4)) concat " +
+                    		"rtrim(ltrim(char(month(A.end_date)))) concat " +
+                    		"rtrim(ltrim(char(day(A.end_date)))) as enddate, A.LINE_ADR1, " +
+                    		"A.LINE_ADR2, A.LINE_ADR3, A.LINE_ADR4, A.CITY_NAME, A.AREA_CODE, " +
+                    		"A.XCHNG_ID, A.SEQ_ID, char('    ',4) as extension, A.STATE_CO, " +
+                    		"A.ZIP_CODE, A.CNTRY_CO, E.EM_EMAIL_LINE, I.bar_code from " +
+                    		term_stad + " A, (" + term_admn + " S LEFT JOIN " +
+                    		"sqldse.PRSNEMAD E ON S.PID9 = E.PID) LEFT JOIN " +
+                    		"student_db.s_bar_code I ON S.PID9 = I.stu_pid " +
+                    		"where S.PID9 = A.PID9 and S.APCT_DECN='ACC' and " +
+                    		"E.EM_EMAIL_TYPE='EMC' and E.EM_EMAIL_LINE like '%ucsd.edu' " +
+                    		"order by S.PID9, A.START_DATE, A.END_DATE";
                     // this query gets the student records with a UCSD email
                     // address
+                    
+                    /*
                     String query = "select " + "S.PID9, " + "S.STUDENT_NAME, "
                             + "ssn='', " + "regStatusCode= '', "
                             + "last_enrolled = '" + term + "', "
@@ -403,7 +478,7 @@ public class fullquery {
                             + "(S.PID9 *= E.PID) and " + "(S.PID9 *= I.pid) "
 
                             + "order by S.PID9, A.START_DATE, A.END_DATE ";
-                    
+                    */
                     //System.out.println("k: "+k);
                     //System.out.println("query: "+query);
                     
@@ -477,8 +552,8 @@ public class fullquery {
                     rs.close();
                 if (stmt != null)
                     stmt.close();
-                if (conn != null)
-                    conn.close();
+                if (db2Conn != null)
+                	db2Conn.close();
 
                 if (rs2 != null)
                     rs2.close();
