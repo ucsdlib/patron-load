@@ -215,7 +215,7 @@ public class incquery {
     		"T.stu_pid = A.stu_pid and (adr_address_type = 'CM' or " +
     		"adr_address_type = 'PM') and stt_registration_status_code in " +
     		"('EN', 'RG') and E.em_address_type = 'EMC' and " +
-    		"E.em_address_line like '%ucsd.edu' and " +
+    		"E.em_address_line like '%ucsd.edu%' and " +
     		"(E.em_end_date is null or E.em_end_date !< current date) " +
             " and A.refresh_date >= '" + getYesterday() + "' " +
     		"order by S.stu_pid, A.adr_start_date, A.adr_end_date ";
@@ -461,7 +461,7 @@ public class incquery {
             		"sqldse.PRSNEMAD E ON S.PID9 = E.PID) LEFT JOIN " +
             		"student_db.s_bar_code I ON S.PID9 = I.stu_pid " +
             		"where S.PID9 = A.PID9 and S.APCT_DECN='ACC' and " +
-            		"E.EM_EMAIL_TYPE='EMC' and E.EM_EMAIL_LINE like '%ucsd.edu' " +
+            		"E.EM_EMAIL_TYPE='EMC' and E.EM_EMAIL_LINE like '%ucsd.edu%' " +
             		"AND (S.REFRESH_DATE >= '"+ getYesterday() + "') " +
             		"order by S.PID9, A.START_DATE, A.END_DATE";
             
