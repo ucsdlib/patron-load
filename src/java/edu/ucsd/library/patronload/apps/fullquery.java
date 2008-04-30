@@ -192,7 +192,7 @@ public class fullquery {
             		"I.bar_code from student_db.s_student_term T, " +
             		"student_db.s_address A, " +
             		"(student_db.s_student S LEFT OUTER JOIN student_db.s_email E ON " +
-            		"S.stu_pid = E.stu_pid) LEFT OUTER JOIN student_db.s_bar_code I " +
+            		"S.stu_pid = E.stu_pid) LEFT OUTER JOIN affiliates_dw.rosetta_stone I " +
             		"ON S.stu_pid = I.stu_pid where (S.stu_pid = T.stu_pid) and " +
             		trm_term_code + " T.stt_major_primary_flag = 'Y' and " +
             		"T.stu_pid = A.stu_pid and (adr_address_type = 'CM' or " +
@@ -445,7 +445,7 @@ public class fullquery {
                     		"A.ZIP_CODE, A.CNTRY_CO, E.EM_EMAIL_LINE, I.bar_code from " +
                     		term_stad + " A, (" + term_admn + " S LEFT JOIN " +
                     		"sqldse.PRSNEMAD E ON S.PID9 = E.PID) LEFT JOIN " +
-                    		"student_db.s_bar_code I ON S.PID9 = I.stu_pid " +
+                    		"affiliates_dw.rosetta_stone I ON S.PID9 = I.stu_pid " +
                     		"where S.PID9 = A.PID9 and S.APCT_DECN='ACC' and " +
                     		"E.EM_EMAIL_TYPE='EMC' and E.EM_EMAIL_LINE like '%ucsd.edu%' " +
                     		"order by S.PID9, A.START_DATE, A.END_DATE";
