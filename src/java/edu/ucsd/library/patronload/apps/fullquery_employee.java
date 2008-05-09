@@ -954,33 +954,48 @@ public class fullquery_employee {
 					"from affiliates_db.dbo.safe_attributes a, " +
 					"affiliates_db.dbo.safe_attributes b where a.aid=b.aid and b.name='emp_id' and " +
 					"b.value=? and a.name='email'";*/
+			/*
 			String emailQuery = "select distinct a.value, b.value from affiliates_db.dbo.safe_attributes a, " +
 					"affiliates_db.dbo.safe_attributes b " +
 					"where a.aid=b.aid and a.name='emp_id' and b.name='official_email'";
+			*/
+
+			String emailQuery = "select distinct emb_person_id, official_email from " +
+					"affiliates_dw.affiliates_safe_attributes where emb_person_id != 0 " +
+					"and official_email != ''";
+
 			employeeMap = new HashMap();
 			
-			pstmt = conn.prepareStatement(emailQuery);
+			//pstmt = conn.prepareStatement(emailQuery);
+			pstmt = db2Conn.prepareStatement(emailQuery);
 			
 			emailRS = pstmt.executeQuery();		
 			
 			while (emailRS.next()) {	
-				employeeMap.put((String)emailRS.getString(1), (String)emailRS.getString(2));	
-		
+				employeeMap.put(String.valueOf(emailRS.getInt(1)), (String)emailRS.getString(2));	
+				
+				//System.out.println("---"+String.valueOf(emailRS.getInt(1)) + (String)emailRS.getString(2));
 			}
 			emailRS = null;
 			pstmt = null;
 			
-			String phoneQuery = "select distinct a.value, b.value from affiliates_db.dbo.safe_attributes a, " +
+			/*String phoneQuery = "select distinct a.value, b.value from affiliates_db.dbo.safe_attributes a, " +
 			"affiliates_db.dbo.safe_attributes b " +
-			"where a.aid=b.aid and a.name='emp_id' and b.name='phone'";
+			"where a.aid=b.aid and a.name='emp_id' and b.name='phone'";*/
+			
+			String phoneQuery = "select distinct emb_person_id, phone from " +
+					"affiliates_dw.affiliates_safe_attributes where " +
+					"emb_person_id != 0 and phone != ''";
+			
 			employeePhone = new HashMap();
 			
-			pstmtPhone = conn.prepareStatement(phoneQuery);
+			//pstmtPhone = conn.prepareStatement(phoneQuery);
+			pstmtPhone = db2Conn.prepareStatement(phoneQuery);
 			
 			phoneRS = pstmtPhone.executeQuery();		
 			
 			while (phoneRS.next()) {	
-				employeePhone.put((String)phoneRS.getString(1), (String)phoneRS.getString(2));	
+				employeePhone.put(String.valueOf(phoneRS.getInt(1)), (String)phoneRS.getString(2));	
 		
 			}
 			phoneRS = null;
