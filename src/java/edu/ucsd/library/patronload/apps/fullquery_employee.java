@@ -1001,11 +1001,16 @@ public class fullquery_employee {
 			phoneRS = null;
 			pstmtPhone = null;
 			
-			String barcodeQuery = "select distinct v.employee_id, " +
-					"v.barcode from idcard_db.dbo.idcard_v v";
+			//String barcodeQuery = "select distinct v.employee_id, " +
+				//	"v.barcode from idcard_db.dbo.idcard_v v";
+			
+			String barcodeQuery = "select distinct emb_employee_id, bar_code " +
+					"from affiliates_dw.rosetta_stone where emb_person_id != 0 " +
+					"and bar_code != 0";
+			
 			employeeBarcode = new HashMap();
 			
-			pstmt = conn.prepareStatement(barcodeQuery);
+			pstmt = db2Conn.prepareStatement(barcodeQuery);
 			
 			barcodeRS = pstmt.executeQuery();		
 			String barcodeVal = null;
