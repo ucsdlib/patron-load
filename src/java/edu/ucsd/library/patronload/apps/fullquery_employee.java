@@ -760,7 +760,7 @@ public class fullquery_employee {
 			//System.exit(1);
 			return;
 		}
-
+/*
 		String dbDriver = (String) original.get("dbdriver");
 		dbDriver = dbDriver.trim();
 
@@ -780,7 +780,7 @@ public class fullquery_employee {
 			E.printStackTrace();
 			System.exit(1);
 		}
-
+*/
 		
 		String db2Driver = (String) original.get("db2driver");
 		String db2Username = (String) original.get("db2username");
@@ -797,7 +797,7 @@ public class fullquery_employee {
 		}
 		
 		Statement stmt = null;
-		Connection conn = null;
+		//Connection conn = null;
 		Connection db2Conn = null;
 		ResultSet rs = null;
 		PreparedStatement pstmt = null;
@@ -837,11 +837,11 @@ public class fullquery_employee {
 			// Used TLI to IP/Port Converter to get IP and port
 			// http://www.outlands.demon.co.uk/utilities/tli2ip.html
 			// TLI: \x000207e984efb4080000000000000000
-			conn =
+			/*conn =
 				DriverManager.getConnection(
 					dbConnection,
 					dbUsername,
-					dbPassword);
+					dbPassword);*/
 			stmt = db2Conn.createStatement();
 			//stmt = conn.createStatement();
 
@@ -1276,8 +1276,8 @@ public class fullquery_employee {
 					phoneRS.close();	
 				if (stmt != null)
 					stmt.close();		
-				if (conn != null)
-					conn.close();
+				//if (conn != null)
+					//conn.close();
 				if (pstmt != null)
 					pstmt.close();
 				if (pstmtPhone != null)
