@@ -3,6 +3,7 @@
 <project name="patronload" default="webapp" basedir=".">
 
 <property file="${user.home}/build.properties"/>
+<property name="common.home" value="../common"/>
 
 <property name="src"                 value="${basedir}/src"/>
 <property name="build"               value="${basedir}/build"/>
@@ -18,10 +19,10 @@
 <property name="compile.deprecation" value="true"/>
 
 <path id="classpath">        
-    <fileset dir="./src/lib" id="jars">
+    <fileset dir="./src/lib" id="local-jars">
         <include name="*.jar"/>
     </fileset>
-    <fileset dir="${jars.home}" id="jars">
+    <fileset dir="${jars.home}" id="shared-jars">
         <include name="library_package.jar"/>
     </fileset>
 	<pathelement location="${build}/classes"/>
@@ -53,9 +54,9 @@
 <property name="emp_active_raw_file"  value="${test}/emp_active_raw.txt"/>
 <property name="emp_inc_raw_file"     value="${test}/emp_inc_raw.txt"/>
 
-<import file="../common/profile.xml"/>
-<import file="../common/remote.xml"/>
-<import file="../common/version.xml"/>
+<import file="${common.home}/profile.xml"/>
+<import file="${common.home}/remote.xml"/>
+<import file="${common.home}/version.xml"/>
 
 <!--======================================================================-->
 <!-- PREPARE -->
