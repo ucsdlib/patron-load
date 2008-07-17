@@ -92,7 +92,9 @@ public class mergeaddr {
 
         String activePM = "?";
         String activeCM = "?";
-
+        boolean isNew = false;
+        String tmpEmail = "";
+        
         boolean foundActiveCM = false;
         boolean foundActivePM = false;
 
@@ -133,7 +135,7 @@ public class mergeaddr {
                             + "\t" + lastenroll + "\t" + level + "\t" + dept
                             + "\t" + pm + "\t" + cm + "\t" + email + "\t"
                             + barcode + "\n");
-
+                   
                     // clear the variables for the next record
                     pm = "?\t ";
                     cm = "?\t ";
@@ -144,10 +146,11 @@ public class mergeaddr {
                     activeCM = "?";
                     foundActiveCM = false;
                     foundActivePM = false;
-
+                    isNew = true;
                 }
 
                 top = false;
+                
 
                 // pad the tabs with a space so that the tokenizer
                 // can work properly
@@ -187,9 +190,15 @@ public class mergeaddr {
                 state = st.nextToken().trim();
                 zip = st.nextToken().trim();
                 country = st.nextToken().trim();
-                email = st.nextToken().trim();
+                tmpEmail = st.nextToken().trim();
+                if(isNew) {
+                	email = tmpEmail;
+                	isNew = false;
+                } else if(tmpEmail.endsWith("@ucsd.edu"))
+                	email = tmpEmail;
+                
                 barcode = st.nextToken().trim();
-
+                	
                 // blank out country if it is US (default)
                 if (country.equals("US")) {
                     country = "?";
@@ -272,7 +281,6 @@ public class mergeaddr {
             pw.write(lastid + "\t" + name + "\t" + ssn + "\t" + regstat + "\t"
                     + lastenroll + "\t" + level + "\t" + dept + "\t" + pm
                     + "\t" + cm + "\t" + email + "\t" + barcode + "\n");
-
         } catch (IOException e) {
             System.out.println(e);
         }
