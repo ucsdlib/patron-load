@@ -173,6 +173,8 @@ public class makemarc {
 				
 				if (st.hasMoreTokens()) {
 					barcode = st.nextToken().trim();
+					if(barcode.equals("0"))
+						barcode = "";
 				} else {
 					barcode = "";
 				}
