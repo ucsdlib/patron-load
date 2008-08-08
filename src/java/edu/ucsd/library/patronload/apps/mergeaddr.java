@@ -72,7 +72,8 @@ public class mergeaddr {
         String cm = "?\t ";
         String pt = "?";
         String ct = "?";
-
+        String emAddressType = "";
+        
         String startdate = "?";
         String stopdate = "?";
         String line1 = "?";
@@ -191,14 +192,35 @@ public class mergeaddr {
                 zip = st.nextToken().trim();
                 country = st.nextToken().trim();
                 tmpEmail = st.nextToken().trim();
+                
+                
+                /*
                 if(isNew) {
                 	email = tmpEmail;
                 	isNew = false;
                 } else if(tmpEmail.endsWith("@ucsd.edu"))
                 	email = tmpEmail;
-                
+                */
+                               
                 barcode = st.nextToken().trim();
-                	
+                emAddressType = st.nextToken().trim();
+                if(emAddressType.equals("EMC")) {
+                	if(isNew) {
+                    	email = tmpEmail;
+                    	isNew = false;
+                    } else if(tmpEmail.endsWith("@ucsd.edu"))
+                    	email = tmpEmail;
+                } else if(emAddressType.equals("EMH")) {
+                	if(isNew) {
+                		if(!tmpEmail.endsWith("@ucsd.edu")) {
+                			email = tmpEmail;
+                		} else
+                			email = "none";
+                    	isNew = false;
+                    } else if (!tmpEmail.endsWith("@ucsd.edu") && !email.endsWith("@ucsd.edu"))
+                    	email = tmpEmail;
+                }
+                
                 // blank out country if it is US (default)
                 if (country.equals("US")) {
                     country = "?";

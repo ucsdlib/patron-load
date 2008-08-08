@@ -167,6 +167,8 @@ public class makemarc {
 
 				if (st.hasMoreTokens()) {
 					email = st.nextToken().trim();
+					if(email.equals("none"))
+						email = "";
 				} else {
 					email = "";
 				}
