@@ -206,7 +206,7 @@ public class incquery {
     		"as area_code, substr(A.adr_phone,5,3) as exchange, " +
     		"substr(A.adr_phone,9,4) as sqid, char(' ',4) as extension, " +
     		"A.adr_state, A.adr_zip, A.co_country_code, E.em_address_line, " +
-    		"I.bar_code from student_db.s_student_term T, " +
+    		"I.bar_code, E.EM_EMAIL_TYPE from student_db.s_student_term T, " +
     		"student_db.s_address A, " +
     		"(student_db.s_student S LEFT OUTER JOIN student_db.s_email E ON " +
     		"S.stu_pid = E.stu_pid) LEFT OUTER JOIN affiliates_dw.rosetta_stone I " +
@@ -456,7 +456,7 @@ public class incquery {
             		"rtrim(ltrim(char(day(A.end_date)))) as enddate, A.LINE_ADR1, " +
             		"A.LINE_ADR2, A.LINE_ADR3, A.LINE_ADR4, A.CITY_NAME, A.AREA_CODE, " +
             		"A.XCHNG_ID, A.SEQ_ID, char('    ',4) as extension, A.STATE_CO, " +
-            		"A.ZIP_CODE, A.CNTRY_CO, E.EM_EMAIL_LINE, I.bar_code from " +
+            		"A.ZIP_CODE, A.CNTRY_CO, E.EM_EMAIL_LINE, I.bar_code, E.EM_EMAIL_TYPE from " +
             		term_stad + " A, (" + term_admn + " S LEFT JOIN " +
             		"sqldse.PRSNEMAD E ON S.PID9 = E.PID) LEFT JOIN " +
             		"affiliates_dw.rosetta_stone I ON S.PID9 = I.stu_pid " +
