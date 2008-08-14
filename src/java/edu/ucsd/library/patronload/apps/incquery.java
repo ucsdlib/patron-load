@@ -206,7 +206,7 @@ public class incquery {
     		"as area_code, substr(A.adr_phone,5,3) as exchange, " +
     		"substr(A.adr_phone,9,4) as sqid, char(' ',4) as extension, " +
     		"A.adr_state, A.adr_zip, A.co_country_code, E.em_address_line, " +
-    		"I.bar_code, E.EM_EMAIL_TYPE from student_db.s_student_term T, " +
+    		"I.bar_code, E.em_address_type from student_db.s_student_term T, " +
     		"student_db.s_address A, " +
     		"(student_db.s_student S LEFT OUTER JOIN student_db.s_email E ON " +
     		"S.stu_pid = E.stu_pid) LEFT OUTER JOIN affiliates_dw.rosetta_stone I " +
