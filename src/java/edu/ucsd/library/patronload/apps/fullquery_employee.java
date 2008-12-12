@@ -893,8 +893,6 @@ public class fullquery_employee {
 					
 					+ ") ORDER BY EMPID, p.emb_employee_name ";
 
-			
-			
 			/*
 			String query =
 				"SELECT DISTINCT "
@@ -1057,7 +1055,6 @@ public class fullquery_employee {
 			String employeeId = null;
 			while (rs.next()) {
 				newId = rs.getString(1);
-	
 				
 				if (!newId.equals(oldId)) {	
 					//ok, now we've come to a new ID, so write
@@ -1077,13 +1074,13 @@ public class fullquery_employee {
 					recordBuffer = filter4d(recordBuffer, typeCodes);
 					//recordBuffer = filter4a(recordBuffer);	
 					
+					
 					if (recordBuffer.size() < 2) {
 						if (recordBuffer.size() > 0) {
 						
 							//if we only have 1 record (removed all duplicates), do stuff here
 							
 							String tmp = (String) recordBuffer.elementAt(0);
-
 							StringBuffer writeOut = new StringBuffer();
 							empId = (String)parseRecord(tmp, 0);
 
@@ -1258,6 +1255,153 @@ public class fullquery_employee {
 					if (!isStudentTitleCode(typeCodes, record)) invalidRecords.append(record);
 				}
 			}
+			//duplicate the code to handle the last row
+			
+			recordBuffer = filter3a(recordBuffer, typeCodes);					
+			recordBuffer = filter4a(recordBuffer);					
+			recordBuffer = filter4b(recordBuffer, typeCodes);					
+			recordBuffer = filter4c(recordBuffer, typeCodes);					
+			recordBuffer = filter4d(recordBuffer, typeCodes);
+			//recordBuffer = filter4a(recordBuffer);	
+			
+			
+			if (recordBuffer.size() < 2) {
+				if (recordBuffer.size() > 0) {
+				
+					//if we only have 1 record (removed all duplicates), do stuff here
+					
+					String tmp = (String) recordBuffer.elementAt(0);
+					StringBuffer writeOut = new StringBuffer();
+					empId = (String)parseRecord(tmp, 0);
+
+					//write out the employee ID
+					writeOut.append(parseRecord(tmp, 0) + "\t");
+					
+					//write out the employee name
+					writeOut.append(parseRecord(tmp, 1) + "\t");
+					
+					//write out the employment status code:
+					//--if emeritus, write out "A" for active
+					if (isEmeritusTitleCode(parseRecord(tmp, 4))) {
+						writeOut.append("A\t");
+					} else {
+						writeOut.append(parseRecord(tmp, 2) + "\t");	
+					}
+					
+					//write out the student status code
+					writeOut.append(parseRecord(tmp, 3) + "\t");
+
+					//write out the patron-type code (mapped from title codes)
+					if (typeCodes.get(parseRecord(tmp, 4)) != null) {
+						
+						//exeption: if department code=265 (affiliation code=29), 
+						//then assign patron type=16
+						if (parseRecord(tmp, 6).equals("265")) {
+						    	writeOut.append("16\t");
+						} else {
+							//if department_code != 265, then do this:
+							
+							if (typeCodes.get(parseRecord(tmp, 4)) == null) {
+								typeCodeNotFound.append(tmp);
+								writeOut.append("0\t");
+							} else {
+								writeOut.append(
+									typeCodes.get(parseRecord(tmp, 4)) + "\t");
+							}
+						}
+					} else {
+						//write a "0" if title code is not found in the mappings.
+						writeOut.append("0" + "\t");
+						titleCodeNotFound.append(tmp);
+					}
+
+					//write out the title name
+					writeOut.append(parseRecord(tmp, 5) + "\t");
+
+					//write the affiliation code (mapped from department-code)
+					if (affiliationCodes.get(parseRecord(tmp, 6))
+						!= null) {
+						writeOut.append(
+							affiliationCodes.get(parseRecord(tmp, 6))
+								+ "\t");
+					} else {
+						writeOut.append("0" + "\t");
+						affiliationCodeNotFound.append(tmp);
+					}
+
+					//write out the department name
+					writeOut.append(parseRecord(tmp, 7)+"\t");
+					
+					//write out the mailcode
+					if(parseRecord(tmp, 9) != null && parseRecord(tmp, 9).length() > 0)
+						writeOut.append(parseRecord(tmp, 9, false)+"\t");
+					else
+						writeOut.append("none\t");
+
+					//write out the phone
+/*							if(parseRecord(tmp, 10) != null && parseRecord(tmp, 10).length() > 0)
+						writeOut.append(parseRecord(tmp, 10)+"\t");
+					else
+						writeOut.append("none\t");*/
+					
+					if(empId != null && employeePhone.containsKey(empId) && employeePhone.get(empId) != null
+							&& ((String)employeePhone.get(empId)).length() > 0) {
+						writeOut.append((String)employeePhone.get(empId)+"\t");	
+					} else {
+						writeOut.append("none\t");
+					}								
+					//write out the email
+/*							if(parseRecord(tmp, 11) != null && parseRecord(tmp, 11).length() > 0)
+						writeOut.append(parseRecord(tmp, 11)+"\t");
+					else
+						writeOut.append("none\t");*/
+
+					//write out the email from affiliates
+
+					if(empId != null && employeeMap.containsKey(empId) && employeeMap.get(empId) != null
+							&& ((String)employeeMap.get(empId)).length() > 0) {
+						writeOut.append((String)employeeMap.get(empId)+"\t");	
+					} else {
+						writeOut.append("none\t");
+					}		
+					
+					//write out the barcode
+					/*
+					if(parseRecord(tmp, 12) != null && parseRecord(tmp, 12).length() > 0)
+						writeOut.append(parseRecord(tmp, 12));
+					else
+						writeOut.append("none");
+					*/
+
+					employeeId = (String)parseRecord(tmp, 12, false);
+					
+					//System.out.println("employeeId:"+employeeId + " -- "+empId + 
+						//	"..."+parseRecord(tmp, 12, false));
+					
+					if(employeeId != null && employeeBarcode.containsKey(employeeId) && 
+							employeeBarcode.get(employeeId) != null
+							&& ((String)employeeBarcode.get(employeeId)).length() > 0) {
+						//System.out.println("hey: "+(String)employeeBarcode.get(employeeId));
+						writeOut.append((String)employeeBarcode.get(employeeId));	
+					} else {
+						writeOut.append("none");
+						//System.out.println("this one has no barcode:"+employeeId);
+					}
+		
+					
+					pw.write(writeOut.toString() + "\n");
+					empId = null;		
+					employeeId = null;
+				}
+				
+			} else {
+				//if this is still a duplicate, dump it into another file
+				for (int i = 0; i < recordBuffer.size(); i++) {
+					moreDuplicates.append((String) recordBuffer.elementAt(0));
+				}
+			}
+
+					
 			
 		} catch (SQLException ex) {
 			System.err.println("Exception: " + ex);
