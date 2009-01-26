@@ -368,8 +368,8 @@ public class fullquery {
         //Connection conn = null;
         ResultSet rs = null;
 
-        Statement stmt2 = null;
-        ResultSet rs2 = null;
+        //Statement stmt2 = null;
+        //ResultSet rs2 = null;
 
         String gradType = "";
 
@@ -556,12 +556,13 @@ public class fullquery {
                 if (db2Conn != null)
                 	db2Conn.close();
 
-                if (rs2 != null)
+                /*if (rs2 != null)
                     rs2.close();
                 if (stmt2 != null)
-                    stmt2.close();
+                    stmt2.close();*/
 
             } catch (SQLException e) {
+            	System.out.println("Close Connection Failure in fullquery.java: " + e);
             }
         }
     }
