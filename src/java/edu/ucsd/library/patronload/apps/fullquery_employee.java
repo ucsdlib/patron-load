@@ -1432,6 +1432,7 @@ public class fullquery_employee {
 				employeePhone = null;
 				employeeBarcode = null;
 			} catch (SQLException e) {
+				System.out.println("Close Connection Failure : " + e);
 			}
 		}
 	}
