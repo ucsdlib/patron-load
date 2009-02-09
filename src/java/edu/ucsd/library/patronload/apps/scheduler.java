@@ -92,9 +92,9 @@ public class scheduler extends HttpServlet {
 		incquery.setMarcFilesDir(marcFilesDir);
 	    fullquery.setMarcFilesDir(marcFilesDir);	
 		System.out.println(
-			"***Patronload Scheduler running. version date: 2002-07-09");
+			"****Patronload Scheduler running. version date: 2002-07-09");
 		runme(contextDir);
-		System.out.println("***Patronload Scheduler Status: Done");
+		System.out.println("****Patronload Scheduler Status: Done");
 	}
 
 	public void runme(String contextDir) {
