@@ -38,7 +38,7 @@
   <servlet>
    <servlet-name>scheduler</servlet-name>
     <servlet-class>edu.ucsd.library.patronload.apps.scheduler</servlet-class>
-    <load-on-startup>0</load-on-startup>
+    <load-on-startup>1</load-on-startup>
    </servlet>
 
   <servlet-mapping>
