@@ -807,10 +807,12 @@ public class fullquery_employee {
 		ResultSet emailRS = null;
 		ResultSet phoneRS = null;
 		ResultSet barcodeRS = null;
+		ResultSet systemIdRS = null;
 		Map employeeMap = null;
 		Map employeePhone = null;
 		Map employeeBarcode = null;
-
+		Map employeeSystemIdMap = null;
+		
 		try {
 
 			db2Conn = DriverManager.getConnection(
@@ -875,7 +877,7 @@ public class fullquery_employee {
                     + "((p.emp_student_status_code = '4') AND (p1.app_title_code IN (" + STUDENT_STAFF_TITLE_CODES + ")) )) "
 
                     // if title code=4011, download only if status code = 1
-                    + "AND ((p1.app_title_code <> '4011') OR ((p1.app_title_code = '4011') AND (p.emp_student_status_code = '1'))) "
+                    + "AND ((p1.app_title_code <> '4011') OR ((p1.app_title_code = '4011') AND((p.emp_student_status_code = '1') OR (p.emp_student_status_code = '3')))) "
 					
                     + "AND (p1.emb_person_id = p.emb_person_id) "
 					+ "AND (p2.emb_person_id = p.emb_person_id) "
@@ -1027,10 +1029,25 @@ public class fullquery_employee {
 			barcodeRS = null;
 			pstmt = null;
 			
+
+			String systemIdQuery = "select a.emb_person_id, s.id from affiliates_dw.system s left join affiliates_dw.affiliates_safe_attributes a " +
+					"on s.aid=a.aid where s.system_id=41 and emb_person_id != 0 and s.id != ''";
+			
+			employeeSystemIdMap = new HashMap();
+			
+			pstmt = db2Conn.prepareStatement(systemIdQuery);
+			
+			systemIdRS = pstmt.executeQuery();		
+			while (systemIdRS.next()) {	
+				employeeSystemIdMap.put(String.valueOf(systemIdRS.getInt(1)), (String)systemIdRS.getString(2));	
+		
+			}
+			systemIdRS = null;
+			pstmt = null;
 			//String key;
 			
 			/*
-			for (Iterator it = employeeBarcode.entrySet().iterator(); it.hasNext();) {
+			for (Iterator it = employeeSystemIdMap.entrySet().iterator(); it.hasNext();) {
 				Map.Entry entry = (Map.Entry) it.next();
 				//key = (String)entry.getKey();
 				
