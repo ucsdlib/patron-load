@@ -1029,7 +1029,7 @@ public class fullquery_employee {
 			barcodeRS = null;
 			pstmt = null;
 			
-
+			/*
 			String systemIdQuery = "select a.emb_person_id, s.id from affiliates_dw.system s left join affiliates_dw.affiliates_safe_attributes a " +
 					"on s.aid=a.aid where s.system_id=41 and emb_person_id != 0 and s.id != ''";
 			
@@ -1044,6 +1044,7 @@ public class fullquery_employee {
 			}
 			systemIdRS = null;
 			pstmt = null;
+			*/
 			//String key;
 			
 			/*
