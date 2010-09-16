@@ -3,7 +3,7 @@ package edu.ucsd.library.patronload.apps;
 /*
  * scheduler.java
  *
- * Created on June 25, 2002, 1:44 PM
+ * Created on June 25, 2002, 1:44 PM;
  */
 
 /**
