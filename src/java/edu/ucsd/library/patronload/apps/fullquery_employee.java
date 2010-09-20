@@ -1,7 +1,8 @@
 /*
  * Created on Sep 11, 2003
  *
- * escowles: adding comment to change file.
+ * To change the template for this generated file go to
+ * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 package edu.ucsd.library.patronload.apps;
 
@@ -1468,7 +1469,7 @@ public class fullquery_employee {
 	private static StringBuffer moreDuplicates = new StringBuffer();
 	private static StringBuffer invalidRecords = new StringBuffer();
 	
-	public static final String STUDENT_STAFF_TITLE_CODES = "'771', '772', '843', '1506', '1630', '1631', '1728', '2077', '2220', '2221', '2709', '2723', '2724', '2725', '2728', '2738', '3220', '3394', '3240', '3296'";
+	public static final String STUDENT_STAFF_TITLE_CODES = "'771', '772', '843', '1506', '1630', '1631', '1728', '2077', '2220', '2221', '2709', '2723', '2724', '2725', '2728','2729', '2738', '3220', '3394', '3240', '3296'";
     
     public static final String EMERITUS_TITLE_CODES = "'1132', '1620', '1621', '3249', '3800'";
 	public static final String EMP_STUDENT_STATUS_CODE = "'1', '3'";
