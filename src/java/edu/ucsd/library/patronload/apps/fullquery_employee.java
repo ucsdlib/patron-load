@@ -1029,7 +1029,6 @@ public class fullquery_employee {
 			barcodeRS = null;
 			pstmt = null;
 			
-			/*
 			String systemIdQuery = "select a.emb_person_id, s.id from affiliates_dw.system s left join affiliates_dw.affiliates_safe_attributes a " +
 					"on s.aid=a.aid where s.system_id=41 and emb_person_id != 0 and s.id != ''";
 			
@@ -1038,17 +1037,22 @@ public class fullquery_employee {
 			pstmt = db2Conn.prepareStatement(systemIdQuery);
 			
 			systemIdRS = pstmt.executeQuery();		
+			String tmpId = "", tmp0 = "";
 			while (systemIdRS.next()) {	
-				employeeSystemIdMap.put(String.valueOf(systemIdRS.getInt(1)), (String)systemIdRS.getString(2));	
-		
+				tmpId = String.valueOf(systemIdRS.getInt(1));
+				for(int m = 0 ; m < 9 - tmpId.length(); m++) {
+					tmp0 += "0";
+				}
+				
+				employeeSystemIdMap.put(tmp0+String.valueOf(systemIdRS.getInt(1)), (String)systemIdRS.getString(2));	
+				tmp0 = "";
 			}
 			systemIdRS = null;
 			pstmt = null;
-			*/
+			
 			//String key;
 			
-			/*
-			for (Iterator it = employeeSystemIdMap.entrySet().iterator(); it.hasNext();) {
+			/*for (Iterator it = employeeSystemIdMap.entrySet().iterator(); it.hasNext();) {
 				Map.Entry entry = (Map.Entry) it.next();
 				//key = (String)entry.getKey();
 				
@@ -1210,13 +1214,21 @@ public class fullquery_employee {
 									employeeBarcode.get(employeeId) != null
 									&& ((String)employeeBarcode.get(employeeId)).length() > 0) {
 								//System.out.println("hey: "+(String)employeeBarcode.get(employeeId));
-								writeOut.append((String)employeeBarcode.get(employeeId));	
+								writeOut.append((String)employeeBarcode.get(employeeId)+"\t");	
 							} else {
-								writeOut.append("none");
+								writeOut.append("none\t");
 								//System.out.println("this one has no barcode:"+employeeId);
 							}
 				
-							
+							if(employeeId != null && employeeSystemIdMap.containsKey(employeeId) && 
+									employeeSystemIdMap.get(employeeId) != null
+									&& ((String)employeeSystemIdMap.get(employeeId)).length() > 0) {
+								//System.out.println("hey: "+(String)employeeSystemIdMap.get(employeeId));
+								writeOut.append((String)employeeSystemIdMap.get(employeeId));	
+							} else {
+								writeOut.append("none");
+								//System.out.println("this one has no barcode:"+employeeId);
+							}							
 							pw.write(writeOut.toString() + "\n");
 							empId = null;		
 							employeeId = null;
