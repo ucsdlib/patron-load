@@ -145,7 +145,8 @@ public class fullquery_employee {
 		String[] array = in.split("\t");
 
 		  //remove leading zeros except in mailcode case
-		  array[num] = removeLeadingZeros(array[num]);
+		if(num != 12)
+			array[num] = removeLeadingZeros(array[num]);
 
 		return array[num];
 	}
@@ -1052,7 +1053,7 @@ public class fullquery_employee {
 			
 			//String key;
 			
-			/*for (Iterator it = employeeSystemIdMap.entrySet().iterator(); it.hasNext();) {
+			/*for (Iterator it = employeeSystemIdMap.entrySet().iterator(); it.hasNext();) c{
 				Map.Entry entry = (Map.Entry) it.next();
 				//key = (String)entry.getKey();
 				
@@ -1213,7 +1214,6 @@ public class fullquery_employee {
 							if(employeeId != null && employeeBarcode.containsKey(employeeId) && 
 									employeeBarcode.get(employeeId) != null
 									&& ((String)employeeBarcode.get(employeeId)).length() > 0) {
-								//System.out.println("hey: "+(String)employeeBarcode.get(employeeId));
 								writeOut.append((String)employeeBarcode.get(employeeId)+"\t");	
 							} else {
 								writeOut.append("none\t");
