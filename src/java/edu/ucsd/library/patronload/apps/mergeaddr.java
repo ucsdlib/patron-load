@@ -90,7 +90,7 @@ public class mergeaddr {
         String country = "?";
         String email = "?";
         String barcode = "?";
-
+        String systemId = "?";
         String activePM = "?";
         String activeCM = "?";
         boolean isNew = false;
@@ -135,7 +135,8 @@ public class mergeaddr {
                     pw.write(lastid + "\t" + name + "\t" + ssn + "\t" + regstat
                             + "\t" + lastenroll + "\t" + level + "\t" + dept
                             + "\t" + pm + "\t" + cm + "\t" + email + "\t"
-                            + barcode + "\n");
+                            + barcode + "\t"
+                            + systemId +"\n");
                    
                     // clear the variables for the next record
                     pm = "?\t ";
@@ -220,7 +221,7 @@ public class mergeaddr {
                     } else if (!tmpEmail.endsWith("@ucsd.edu") && !email.endsWith("@ucsd.edu"))
                     	email = tmpEmail;
                 }
-                
+                systemId = st.nextToken().trim();
                 // blank out country if it is US (default)
                 if (country.equals("US")) {
                     country = "?";
@@ -302,7 +303,7 @@ public class mergeaddr {
             // write the very last record from the input to the stream
             pw.write(lastid + "\t" + name + "\t" + ssn + "\t" + regstat + "\t"
                     + lastenroll + "\t" + level + "\t" + dept + "\t" + pm
-                    + "\t" + cm + "\t" + email + "\t" + barcode + "\n");
+                    + "\t" + cm + "\t" + email + "\t" + barcode + "\t" + systemId +"\n");
         } catch (IOException e) {
             System.out.println(e);
         }
