@@ -76,6 +76,7 @@ public class makemarc {
 			String pt = "";
 			String email = "";
 			String barcode = "";
+			String systemId = "";
 			debugData = new StringBuffer();
 
 			// keep going while there are still lines
@@ -181,6 +182,12 @@ public class makemarc {
 					barcode = "";
 				}
 
+				if (st.hasMoreTokens()) {
+					systemId = st.nextToken().trim();
+				} else {
+					systemId = "";
+				}
+				
 				String deptnum = "";
 				try {
 					deptnum = ((String) patronLoadProperties.get(dept)).trim();
@@ -225,7 +232,8 @@ public class makemarc {
 				makeFieldEntry("230", pm);
 				makeFieldEntry("235", pt);
 				makeFieldEntry("550", email);
-
+				if(systemId != "")
+					makeFieldEntry("400", systemId);
 				if (debug) {
 				    debugData.append("\n");
 				}
