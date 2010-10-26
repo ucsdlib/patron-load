@@ -1,5 +1,8 @@
 <%@page import="java.io.*,java.sql.*,java.util.*,javax.naming.*,edu.ucsd.library.util.*"%>
 <%
+	Connection con = null;
+	Statement stmt = null;
+	ResultSet rs = null;
 	try
 	{
 		// write files
@@ -32,9 +35,9 @@
 	
 		// db query
 		Class.forName( driv );
-		Connection con = DriverManager.getConnection( url, user, pass );
-		Statement stmt = con.createStatement();
-		ResultSet rs = stmt.executeQuery( sql );
+		con = DriverManager.getConnection( url, user, pass );
+		stmt = con.createStatement();
+		rs = stmt.executeQuery( sql );
 		if ( rs.next() )
 		{
 			int count = rs.getInt(1);
@@ -46,5 +49,11 @@
 	catch ( Exception ex )
 	{
 		out.print("FAIL: " + ex.toString() );
+	}
+	finally
+	{
+		try { rs.close(); } catch ( Exception ex2 ) { ex2.printStackTrace(); }
+		try { stmt.close(); } catch ( Exception ex2 ) { ex2.printStackTrace(); }
+		try { con.close(); } catch ( Exception ex2 ) { ex2.printStackTrace(); }
 	}
 %>
