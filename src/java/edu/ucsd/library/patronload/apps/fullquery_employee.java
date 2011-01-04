@@ -88,6 +88,7 @@ public class fullquery_employee {
 
 		//--- Create the file stream here to output to file
 		try {
+			
 			pw =
 				new PrintWriter(
 					new BufferedOutputStream(
@@ -756,6 +757,8 @@ public class fullquery_employee {
 			original = FileUtils.loadProperties(props3);
 			typeCodes = FileUtils.loadProperties(props2);
 			affiliationCodes = FileUtils.loadProperties(props1);
+			getAllTypeCodes(typeCodes);
+			
 		} catch (IOException ioe) {
 			System.out.println("Error loading properties file!");
 			//System.exit(1);
@@ -875,7 +878,7 @@ public class fullquery_employee {
 					+ " WHERE " 
 					+ " ("
 					+ "((p.emp_student_status_code IN (" + EMP_STUDENT_STATUS_CODE + ")) OR "
-                    + "((p.emp_student_status_code = '4') AND (p1.app_title_code IN (" + STUDENT_STAFF_TITLE_CODES + ")) )) "
+                    + "((p.emp_student_status_code = '4') AND (p1.app_title_code IN (" + NEW_STUDENT_STAFF_TITLE_CODES + ")) )) "
 
                     // if title code=4011, download only if status code = 1
                     + "AND ((p1.app_title_code <> '4011') OR ((p1.app_title_code = '4011') AND((p.emp_student_status_code = '1') OR (p.emp_student_status_code = '3')))) "
@@ -1467,6 +1470,17 @@ public class fullquery_employee {
 		}
 	}
 
+	private static void getAllTypeCodes(Properties props) {
+		StringBuffer tmpStringBuffer = new StringBuffer();
+		
+		for (Enumeration e = props.propertyNames(); e.hasMoreElements();) {
+			String value = (String) e.nextElement();
+			if(value != null)
+				tmpStringBuffer.append("'"+value+"',");
+		}
+		NEW_STUDENT_STAFF_TITLE_CODES = tmpStringBuffer.toString();
+		NEW_STUDENT_STAFF_TITLE_CODES = NEW_STUDENT_STAFF_TITLE_CODES.substring(0, NEW_STUDENT_STAFF_TITLE_CODES.length()-1);
+	}
 	private static Vector recordBuffer;
 	private static String outputLocation;
 	
@@ -1487,7 +1501,7 @@ public class fullquery_employee {
 	public static final String EMP_STUDENT_STATUS_CODE = "'1', '3'";
 	public static final String SEPARATED_CODES = "'S', 'K'";
 	public static final String BLOCKED_STATUS_CODES = "'K'";
-	
+	public static String NEW_STUDENT_STAFF_TITLE_CODES = "";
 }
 
 
