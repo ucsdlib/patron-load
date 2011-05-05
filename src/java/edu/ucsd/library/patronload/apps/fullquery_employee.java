@@ -146,10 +146,11 @@ public class fullquery_employee {
 		String[] array = in.split("\t");
 
 		  //remove leading zeros except in mailcode case
-		if(num != 12)
-			array[num] = removeLeadingZeros(array[num]);
-
-		return array[num];
+		if(num != 12) {
+			array[num] = removeLeadingZeros(array[num]);	
+			return array[num];
+		} else
+			return "none";
 	}
 
   public static String parseRecord(String in, int num, boolean removeZero) {
