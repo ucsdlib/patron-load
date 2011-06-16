@@ -146,7 +146,7 @@ public class fullquery_employee {
 		String[] array = in.split("\t");
 
 		  //remove leading zeros except in mailcode case
-		if(num != 12) {
+		if(num != 14) {
 			array[num] = removeLeadingZeros(array[num]);	
 			return array[num];
 		} else
@@ -467,9 +467,9 @@ public class fullquery_employee {
 						&& (index < recordBuffer.size())) {
 						String tmpCurrent = (String) recordBuffer.elementAt(index);
 						recordEndDateTmp = format.parse(parseRecord(tmpCurrent, 13));
-	
+						//recordEndDateTmp = format.parse(parseRecord(tmpCurrent, 14));
 						isAfterTmp = recordEndDateTmp.after(currentDate);
-						
+
 						if (index == 0
 							&& parseRecord(tmpCurrent, 4).equals(
 								Integer.toString(smallestTitleCode)) && isAfterTmp) {
@@ -965,6 +965,27 @@ public class fullquery_employee {
 					"where a.aid=b.aid and a.name='emp_id' and b.name='official_email'";
 			*/
 
+			String employeePidQuery = "select distinct employee_id, PID from " +
+					"affiliates_dw.affiliates_safe_attributes where employee_id != '' and PID != '' order by employee_id";
+
+			Map employeePidMap = new HashMap();
+			
+			//pstmt = conn.prepareStatement(emailQuery);
+			pstmt = db2Conn.prepareStatement(employeePidQuery);
+			
+			ResultSet employeePidRS = pstmt.executeQuery();		
+			
+			while (employeePidRS.next()) {	
+				employeePidMap.put(employeePidRS.getString(1), (String)employeePidRS.getString(2));	
+				
+				//if(String.valueOf(employeePidRS.getInt(1)).equals("238952"))
+				//	System.out.println("aaaa---"+employeePidRS.getString(1) + "-"+(String)employeePidRS.getString(2));
+			}
+			System.out.println("size:"+employeePidMap.size());
+			employeePidRS = null;
+			emailRS = null;
+			pstmt = null;
+	
 			String emailQuery = "select distinct emb_person_id, official_email from " +
 					"affiliates_dw.affiliates_safe_attributes where emb_person_id != 0 " +
 					"and official_email != ''";
@@ -1228,11 +1249,24 @@ public class fullquery_employee {
 									employeeSystemIdMap.get(employeeId) != null
 									&& ((String)employeeSystemIdMap.get(employeeId)).length() > 0) {
 								//System.out.println("hey: "+(String)employeeSystemIdMap.get(employeeId));
-								writeOut.append((String)employeeSystemIdMap.get(employeeId));	
+								writeOut.append((String)employeeSystemIdMap.get(employeeId)+"\t");	
+							} else {
+								writeOut.append("none\t");
+								//System.out.println("this one has no barcode:"+employeeId);
+							}		
+							
+							if(employeeId != null && employeePidMap.containsKey(employeeId) && 
+									employeePidMap.get(employeeId) != null
+									&& ((String)employeePidMap.get(employeeId)).length() > 0) {
+								
+						//	if(employeeId != null && employeePidMap.containsKey(employeeId)) {
+							//	System.out.println(employeeId+ "-hey: "+(String)employeePidMap.get(employeeId));
+								writeOut.append((String)employeePidMap.get(employeeId));	
 							} else {
 								writeOut.append("none");
-								//System.out.println("this one has no barcode:"+employeeId);
-							}							
+								//System.out.println("this one has no Pid:"+employeeId);
+							}	
+							
 							pw.write(writeOut.toString() + "\n");
 							empId = null;		
 							employeeId = null;
@@ -1416,13 +1450,31 @@ public class fullquery_employee {
 							employeeBarcode.get(employeeId) != null
 							&& ((String)employeeBarcode.get(employeeId)).length() > 0) {
 						//System.out.println("hey: "+(String)employeeBarcode.get(employeeId));
-						writeOut.append((String)employeeBarcode.get(employeeId));	
+						writeOut.append((String)employeeBarcode.get(employeeId)+"\t");	
 					} else {
-						writeOut.append("none");
+						writeOut.append("none"+"\t");
 						//System.out.println("this one has no barcode:"+employeeId);
 					}
 		
+					if(employeeId != null && employeeSystemIdMap.containsKey(employeeId) && 
+							employeeSystemIdMap.get(employeeId) != null
+							&& ((String)employeeSystemIdMap.get(employeeId)).length() > 0) {
+						//System.out.println("hey: "+(String)employeeSystemIdMap.get(employeeId));
+						writeOut.append((String)employeeSystemIdMap.get(employeeId)+"\t");	
+					} else {
+						writeOut.append("none\t");
+						//System.out.println("this one has no barcode:"+employeeId);
+					}		
 					
+					if(employeeId != null && employeePidMap.containsKey(employeeId) && 
+							employeePidMap.get(employeeId) != null
+							&& ((String)employeePidMap.get(employeeId)).length() > 0) {
+						System.out.println(employeeId+ "-hey: "+(String)employeePidMap.get(employeeId));
+						writeOut.append((String)employeePidMap.get(employeeId));	
+					} else {
+						writeOut.append("none");
+						//System.out.println("this one has no barcode:"+employeeId);
+					}	
 					pw.write(writeOut.toString() + "\n");
 					empId = null;		
 					employeeId = null;
