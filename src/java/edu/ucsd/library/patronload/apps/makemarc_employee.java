@@ -58,7 +58,9 @@ public class makemarc_employee {
 				//String testEmail = fullquery_employee.parseRecord(lineIn, 12);
 				String employeeBarcode = fullquery_employee.parseRecord(lineIn, 11);
 				String employeeSystemId = fullquery_employee.parseRecord(lineIn, 12);
-				
+				String employeePid = fullquery_employee.parseRecord(lineIn, 13);
+				if(empId.equals("238952"))
+					System.out.println("name:"+name+" id:"+empId+" employeePid:"+employeePid);
 /*				System.out.println("name:"+name+" id:"+empId+" mailcode:"+employeeMailCode);
 				System.out.println("phone:"+employeePhone);
 				System.out.println("email:"+employeeEmail);
@@ -98,6 +100,10 @@ public class makemarc_employee {
 				if(!employeeSystemId.equals("none")) {
 					makeFieldEntry("400", employeeSystemId);
 				}
+				
+				if(!employeePid.equals("none")) {
+					makeFieldEntry("020", employeePid);
+				}				
 				/*System.out.println("id:"+empId + " name:"+name + " titleCode:"+titleCode 
 						+ " " + affilCode + " " + employeeMailCode + " " + employeePhone 
 						+ " "+employeeEmail + " " + employeeBarcode);*/
