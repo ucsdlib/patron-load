@@ -59,8 +59,8 @@ public class makemarc_employee {
 				String employeeBarcode = fullquery_employee.parseRecord(lineIn, 11);
 				String employeeSystemId = fullquery_employee.parseRecord(lineIn, 12);
 				String employeePid = fullquery_employee.parseRecord(lineIn, 13);
-				if(empId.equals("238952"))
-					System.out.println("name:"+name+" id:"+empId+" employeePid:"+employeePid);
+				//if(empId.equals("238952"))
+					//System.out.println("name:"+name+" id:"+empId+" employeePid:"+employeePid);
 /*				System.out.println("name:"+name+" id:"+empId+" mailcode:"+employeeMailCode);
 				System.out.println("phone:"+employeePhone);
 				System.out.println("email:"+employeeEmail);
