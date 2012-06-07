@@ -21,7 +21,7 @@ UCSD Libraries Student Database Download Software
 	function resize(win) {
 		if (is_ie4up) {
 			win.resizeTo(500,400);
-		} else if (is_nav4) {
+		} else if (is_nav4) { 
 			win.resizeTo(500,250);
 		}
 	}

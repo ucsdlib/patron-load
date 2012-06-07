@@ -7,7 +7,9 @@ package edu.ucsd.library.patronload.beans;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -15,6 +17,10 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.HashMap; 
+import java.util.Enumeration;
+import java.util.Map;
+
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -812,6 +818,54 @@ public class patronload_bean {
 	}
 
 	
+	/**
+	 * Method to change the properties file
+	 */
+	public int setPropertiesFile(String file, String name, String newValue) throws IOException
+	{
+		Properties props = new Properties();
+		File propsfile = new File("/pub/data1/import/htdocs/patronload/" + file);
+        FileInputStream fis = new FileInputStream(propsfile);
+        props.load(fis);   
+        Object o = props.setProperty(name, newValue);
+        String cmt;
+        if(file.equals("emp_affiliations.properties"))
+        	cmt = "#Employee Download - Affiliation code\n#[department code] = [library code]\n";
+       	else if(file.equals("employee_types.properties"))
+       		cmt ="#Staff Group\n";
+       	else 
+       		cmt = "#\n#Wed Apr 09 15:47:59 PDT 2008\n";
+        props.store(new FileOutputStream(propsfile), cmt);
+        fis.close();
+        if(o == null)
+        	return 0;
+        else
+        	return 1;
+	}
+	
+	
+	/**
+	 * Method to get the whole set from the properties file
+	 */
+	public Map<String, String> getPropertiesSet(String file)  throws IOException
+	{
+		Properties props = new Properties();
+		File propsfile = new File("/pub/data1/import/htdocs/patronload/" + file);
+        FileInputStream fis = new FileInputStream(propsfile);
+        props.load(fis);  
+        Map<String, String> propMap = new HashMap<String, String>();
+        Enumeration e = props.propertyNames();
+        for (; e.hasMoreElements(); ) {
+            String propName = (String)e.nextElement();
+            String propValue = (String)props.get(propName);
+            propMap.put(propName, propValue);
+        }
+       fis.close();
+       
+       return propMap;
+	}
+	
+
     /**
      * Method to upudate settings
      * @param quarter The quarter from which to get data
