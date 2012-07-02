@@ -35,7 +35,7 @@
   
   <servlet>
    <servlet-name>getmarcfile</servlet-name>
-    <servlet-class>edu.ucsd.library.patronload.beans.getmarcfile</servlet-class>
+    <servlet-class>edu.ucsd.library.patronload.apps.getmarcfile</servlet-class>
   </servlet>
   
   <servlet>
