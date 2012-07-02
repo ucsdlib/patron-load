@@ -8,12 +8,20 @@
 	String key = request.getParameter("propName");
 	String value = request.getParameter("newPropValue");
 	String target = request.getParameter("target");
-	int output = patronLoad.setPropertiesFile(target, key, value); 
 	request.setAttribute("action","edit");
-	if(output == 1)
-		request.setAttribute("message", "Properties Value successfully changed!");
- 	if(output == 0)
-		request.setAttribute("message", "New Properties was added");
+	if( request.getParameter("action").equals("delete"))
+	{
+		patronLoad.delProperties(target, key); 
+		request.setAttribute("message", "Key is deleted!");
+	}
+	else
+	{
+		int output = patronLoad.setPropertiesFile(target, key, value); 
+		if(output == 1)
+			request.setAttribute("message", "Properties Value successfully changed!");
+	 	if(output == 0)
+			request.setAttribute("message", "New Properties was added");
+	}
 	
 %>
 <jsp:forward page="listProperties.jsp" />

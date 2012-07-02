@@ -843,6 +843,28 @@ public class patronload_bean {
         	return 1;
 	}
 	
+	public int delProperties(String file, String name) throws IOException
+	{
+		Properties props = new Properties();
+		File propsfile = new File("/pub/data1/import/htdocs/patronload/" + file);
+        FileInputStream fis = new FileInputStream(propsfile);
+        props.load(fis);   
+        Object o = props.remove(name);
+        String cmt;
+        if(file.equals("emp_affiliations.properties"))
+        	cmt = "#Employee Download - Affiliation code\n#[department code] = [library code]\n";
+       	else if(file.equals("employee_types.properties"))
+       		cmt ="#Staff Group\n";
+       	else 
+       		cmt = "#\n#Wed Apr 09 15:47:59 PDT 2008\n";
+        props.store(new FileOutputStream(propsfile), cmt);
+        fis.close();
+        if(o == null)
+        	return 0;
+        else
+        	return 1;
+	}
+	
 	
 	/**
 	 * Method to get the whole set from the properties file
