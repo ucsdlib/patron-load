@@ -14,8 +14,9 @@
     //String expiration1  = request.getParameter("expiration1");
                 
     //make the undergrads have the same expiration as grads
-    String expiration1  = request.getParameter("expiration2");
-		
+    //String expiration1  = request.getParameter("expiration2");
+    
+	String expiration1  = request.getParameter("expiration1");	
     String expiration2  = request.getParameter("expiration2");
                
     String employee1_exp = request.getParameter("employee1_exp");

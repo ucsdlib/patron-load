@@ -43,7 +43,20 @@
 				<tr>
 					<td>
 						<font face="Verdana, Arial, sans-serif" size=2 class="fontNormal" color="#FFFFFF">
-							<b>CURRENT student expiration date:</b>
+							<b>CURRENT Undergrad student expiration date:</b>
+						</font>
+					</td>
+					<td>
+						<font face="Verdana, Arial, sans-serif" size=2 class="fontNormal" color="#FFFFFF">
+							<%= patronLoad.getExpiredate_undergrad() %>
+						</font>
+					</td>
+				</tr>
+				
+				<tr>
+					<td>
+						<font face="Verdana, Arial, sans-serif" size=2 class="fontNormal" color="#FFFFFF">
+							<b>CURRENT Grad student expiration date:</b>
 						</font>
 					</td>
 					<td>
@@ -146,7 +159,39 @@
 				<tr>
 					<td>
 						<font face="Verdana, Arial, sans-serif" size=2 class="fontNormal" color="#FFFFFF">
-							<b>NEW student expiration date:</b>
+							<b>NEW Undergrad student expiration date:</b>
+						</font>
+					</td>
+					<td>
+						<font face="Verdana, Arial, sans-serif" size=2 class="fontNormal" color="#FFFFFF">
+							
+							<select name="expiration1">
+								<%
+								    for (int j=year; j < year+3; j++) {
+								        for (int i=0; i < 3; i++) {
+								            String jj = (new Integer(j)).toString();
+								            jj = jj.substring(2, 4);
+								            String exp_undergrad = "";
+								            if (i==0) exp_undergrad = "03-31-" + jj;
+								            if (i==1) exp_undergrad = "07-31-" + jj;
+								            if (i==2) exp_undergrad = "12-31-" + jj;
+								            if (patronLoad.getExpiredate_undergrad().trim().equals(exp_undergrad)) {
+								                out.println("<option selected value=\"" + exp_undergrad + "\">" + exp_undergrad);
+								            } else {
+								                out.println("<option value=\"" + exp_undergrad + "\">" + exp_undergrad);
+								            }
+								        }
+								    }
+								%>
+							</select>
+						</font>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						<font face="Verdana, Arial, sans-serif" size=2 class="fontNormal" color="#FFFFFF">
+							<b>NEW Grad student expiration date:</b>
 						</font>
 					</td>
 					<td>
@@ -160,7 +205,7 @@
 								            jj = jj.substring(2, 4);
 								            String exp_grad = "";
 								            if (i==0) exp_grad = "03-31-" + jj;
-								            if (i==1) exp_grad = "07-31-" + jj;
+								            if (i==1) exp_grad = "09-30-" + jj;
 								            if (i==2) exp_grad = "12-31-" + jj;
 								            if (patronLoad.getExpiredate_graduate().trim().equals(exp_grad)) {
 								                out.println("<option selected value=\"" + exp_grad + "\">" + exp_grad);
@@ -174,7 +219,7 @@
 						</font>
 					</td>
 				</tr>
-				
+								
 				<tr>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
