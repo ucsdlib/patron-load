@@ -20,6 +20,8 @@ import java.util.Vector;
 import java.util.HashMap; 
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.SortedMap;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -823,20 +825,34 @@ public class patronload_bean {
 	 */
 	public int setPropertiesFile(String file, String name, String newValue) throws IOException
 	{
-		Properties props = new Properties();
-		File propsfile = new File("/pub/data1/import/htdocs/patronload/" + file);
-        FileInputStream fis = new FileInputStream(propsfile);
-        props.load(fis);   
-        Object o = props.setProperty(name, newValue);
-        String cmt;
-        if(file.equals("emp_affiliations.properties"))
-        	cmt = "#Employee Download - Affiliation code\n#[department code] = [library code]\n";
-       	else if(file.equals("employee_types.properties"))
-       		cmt ="#Staff Group\n";
-       	else 
-       		cmt = "#\n#Wed Apr 09 15:47:59 PDT 2008\n";
-        props.store(new FileOutputStream(propsfile), cmt);
-        fis.close();
+		 Properties myProp = null;
+		 Object o = null;
+		 String link = "";
+	        try {
+	        	link = pathToProperties.substring(0,pathToProperties.length()-22);
+	            myProp = FileUtils.loadProperties(link + file);
+	        } catch (IOException ioe) {
+	        	
+	        }  
+	        o = myProp.setProperty(name, newValue);
+	        String cmt;
+	        
+	        if(file.equals("emp_affiliations.properties"))
+	        	cmt = "#Employee Download - Affiliation code\n#[department code] = [library code]\n";
+	       	else if(file.equals("employee_types.properties"))
+	       		cmt ="#Staff Group\n";
+	       	else 
+	       		cmt = "#\n#Wed Apr 09 15:47:59 PDT 2008\n";
+	        
+	        try {
+	            FileOutputStream fos = new FileOutputStream(link + file);
+	            myProp.store(fos, cmt);
+	            fos.close();
+	        } catch (FileNotFoundException fnfe) {
+	            return 2;
+	        } catch (IOException ioe) {
+	            return 3;
+	        }
         if(o == null)
         	return 0;
         else
@@ -845,46 +861,102 @@ public class patronload_bean {
 	
 	public int delProperties(String file, String name) throws IOException
 	{
-		Properties props = new Properties();
-		File propsfile = new File("/pub/data1/import/htdocs/patronload/" + file);
-        FileInputStream fis = new FileInputStream(propsfile);
-        props.load(fis);   
-        Object o = props.remove(name);
-        String cmt;
-        if(file.equals("emp_affiliations.properties"))
-        	cmt = "#Employee Download - Affiliation code\n#[department code] = [library code]\n";
-       	else if(file.equals("employee_types.properties"))
-       		cmt ="#Staff Group\n";
-       	else 
-       		cmt = "#\n#Wed Apr 09 15:47:59 PDT 2008\n";
-        props.store(new FileOutputStream(propsfile), cmt);
-        fis.close();
-        if(o == null)
-        	return 0;
-        else
-        	return 1;
+		Properties myProp = null;
+		 Object o = null;
+		 String link = "";
+	        try {
+	        	link = pathToProperties.substring(0,pathToProperties.length()-22);
+	            myProp = FileUtils.loadProperties(link + file);
+	        } catch (IOException ioe) {
+	        	
+	        }  
+	        o = myProp.remove(name);
+	        String cmt;
+	        
+	        if(file.equals("emp_affiliations.properties"))
+	        	cmt = "#Employee Download - Affiliation code\n#[department code] = [library code]\n";
+	       	else if(file.equals("employee_types.properties"))
+	       		cmt ="#Staff Group\n";
+	       	else 
+	       		cmt = "#\n#Wed Apr 09 15:47:59 PDT 2008\n";
+	        
+	        try {
+	            FileOutputStream fos = new FileOutputStream(link + file);
+	            myProp.store(fos, cmt);
+	            fos.close();
+	        } catch (FileNotFoundException fnfe) {
+	            return 2;
+	        } catch (IOException ioe) {
+	            return 3;
+	        }
+       if(o == null)
+       	return 0;
+       else
+       	return 1;
 	}
 	
 	
 	/**
 	 * Method to get the whole set from the properties file
 	 */
-	public Map<String, String> getPropertiesSet(String file)  throws IOException
+	public Map getPropertiesSet(String file)  throws IOException
 	{
-		Properties props = new Properties();
-		File propsfile = new File("/pub/data1/import/htdocs/patronload/" + file);
-        FileInputStream fis = new FileInputStream(propsfile);
-        props.load(fis);  
-        Map<String, String> propMap = new HashMap<String, String>();
-        Enumeration e = props.propertyNames();
-        for (; e.hasMoreElements(); ) {
-            String propName = (String)e.nextElement();
-            String propValue = (String)props.get(propName);
-            propMap.put(propName, propValue);
+		 
+		Properties props = null;
+		Object o = null;
+		String link = "";
+        try {
+        	link = pathToProperties.substring(0,pathToProperties.length()-22);
+        	props = FileUtils.loadProperties(link + file);
+        } catch (IOException ioe) {
+        	
+        } 
+        Map<String,String> sortedMap = null;
+        if(file.equals("patron_load.properties"))
+        {
+	        Map<String, String> propMap = new HashMap<String, String>();
+	        Enumeration e = props.propertyNames();
+	        for (; e.hasMoreElements(); ) {
+	            String propName = (String)e.nextElement();
+	            String propValue = (String)props.get(propName);
+	            if(propValue.length() < 5)
+	            	propMap.put(propName, propValue);
+	        }    
+	        sortedMap = new TreeMap(propMap);
         }
-       fis.close();
-       
-       return propMap;
+        else
+        {
+        	Map<Integer, String> propMap = new HashMap<Integer, String>();
+  	        Enumeration e = props.propertyNames();
+  	        for (; e.hasMoreElements(); ) {
+  	            String propName = (String)e.nextElement();
+  	            int propKey = Integer.parseInt(propName);
+  	            String propValue = (String)props.get(propName);
+  	            if(propValue.length() < 5)
+  	            	propMap.put(propKey, propValue);
+  	        }    
+  	        sortedMap = new TreeMap(propMap);
+        }
+       return sortedMap;
+	}
+	
+	/**
+	 * Method to search for the existed key
+	 */
+	public boolean hasPropertiesKey(String file, String key)throws IOException
+	{
+		Properties props = null;
+		Object o = null;
+		String link = "";
+        try {
+        	link = pathToProperties.substring(0,pathToProperties.length()-22);
+        	props = FileUtils.loadProperties(link + file);
+        } catch (IOException ioe) {
+        	
+        } 
+        if(props.getProperty(key) == null)
+        	return false;
+        return true;
 	}
 	
 

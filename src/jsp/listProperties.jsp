@@ -3,8 +3,17 @@
 <jsp:useBean id="patronLoad" class="edu.ucsd.library.patronload.beans.patronload_bean" scope="session"/>
 <html>
 <head>
+<script type="text/javascript">
+function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        vars[key] = value;
+    });
+    return vars;
+}
+</script>
 </head>
-<body>
+
 <body background="../images/background.gif">
 <%
 	if(request.getAttribute("action")!= null && ((String)request.getAttribute("action")).equals("edit"))
@@ -16,6 +25,26 @@
 			<font color="RED"> <%=msg%> </font>
 			<% 
 		}
+	}
+	if(request.getAttribute("action")!= null && ((String)request.getAttribute("action")).equals("keyInvalid"))
+	{
+		%>
+		<script type="text/javascript">
+			var r = confirm("Key entered is already existed in the Properties File. \n\t     Do you want to replace the old value?");
+			var target = getUrlVars()["target"];
+			var value = getUrlVars()["newPropValue"];
+			var key = getUrlVars()["propName"];
+			var npass = "listProperties.jsp?target=" + target;
+			var pass = "editProperties.jsp?target=" + target + "&propName=" + key + "&newPropValue=" + value + "&action=edit";
+			if(r==false)
+				window.location.href = npass;
+			else
+				window.location.href = pass;
+		</script>
+		
+		
+		<%
+		
 	}
 	String typ = request.getParameter("target");
 	String link = "../WEB-INF/pub/data1/import/htdocs/patronload/" + typ;
@@ -69,39 +98,39 @@
 <td> </td>
 <td><input type="text" name="newPropValue" style="width:60"/></td>
 <input type="hidden" name="target" value="<%=request.getParameter("target")%>"/>
-<input type="hidden" value="edit" name="action">
+<input type="hidden" value="add" name="action">
 <td><input type="submit" value="Add"/></td>
 </form>
 </tr>
 <%
-
-Map<String, String> map = patronLoad.getPropertiesSet(request.getParameter("target")); 
-for (Map.Entry<String, String> entry : map.entrySet())
+Map map = patronLoad.getPropertiesSet(request.getParameter("target"));
+Iterator it = map.entrySet().iterator();
+String propName;
+while(it.hasNext())
 {
-	String propName = entry.getKey();
-	String propValue = entry.getValue();
-	if(propName.length() == 4)
-	{
+	Map.Entry pairs = (Map.Entry)it.next();
+	//propName = entry.getKey();
+	//String propValue = pairs.getValue();
 	%>
 	<tr style="color:#FFFFFF">
-	<td><%=propName%></td>
-	<td><%=propValue%></td>
+	<td><%=pairs.getKey()%></td>
+	<td><%=pairs.getValue()%></td>
 	<form action="editProperties.jsp" method="get">
 	<td><input type="text" name="newPropValue" style="width:60"/></td>
-	<input type="hidden" name="propName" value="<%=propName%>" />
+	<input type="hidden" name="propName" value="<%=pairs.getKey()%>" />
 	<input type="hidden" name="target" value="<%=request.getParameter("target")%>"/>
 	<input type="hidden" value="edit" name="action">
 	<td><input type="submit" value="Update"/></td> 
 	</form>
 	<form action="editProperties.jsp" method="get">
-	<input type="hidden" name="propName" value="<%=propName%>" />
+	<input type="hidden" name="propName" value="<%=pairs.getKey()%>" />
 	<input type="hidden" name="target" value="<%=request.getParameter("target")%>"/>
 	<input type="hidden" value="delete" name="action">
 	<td><input type="submit" value="Delete"/></td> 
 	</form>
 	</tr>
 	<%
-	}
+	
 }
 %>
 </table>

@@ -8,8 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;  
 import java.io.FileNotFoundException;  
 import java.io.*;  
-   
-   
+import java.util.*;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.SortedMap;
+
 public class downloadProperties extends HttpServlet {  
    
 /** 
@@ -22,23 +25,46 @@ public class downloadProperties extends HttpServlet {
  * @throws ServletException if an error occurred 
  * @throws IOException if an error occurred 
  */  
-public void doGet(HttpServletRequest request, HttpServletResponse response)  
-throws ServletException, IOException, FileNotFoundException  {  
- String fileName = request.getParameter("fileName");
- response.setContentType("text/plain"); 
- response.setHeader("Content-Disposition",
-         "attachment;filename=" + fileName);
- ServletContext ctx = getServletContext();
- String marcFilesDir = ctx.getInitParameter("marcFilePath");
- InputStream is = new FileInputStream(marcFilesDir + fileName);
- int read =0;  
- byte[] bytes = new byte[1024];  
- OutputStream os = response.getOutputStream();  
- while((read = is.read(bytes)) != -1)  
- {  
- os.write(bytes, 0, read);  
- }  
- os.flush();  
- os.close();  
+public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, FileNotFoundException  {  
+	 String fileName = request.getParameter("fileName");
+	 response.setContentType("text/plain"); 
+	 response.setHeader("Content-Disposition","attachment;filename=" + fileName);
+	 ServletContext ctx = getServletContext();
+	 String marcFilesDir = ctx.getInitParameter("marcFilePath");
+	 BufferedReader is = new BufferedReader(new FileReader(marcFilesDir + fileName));
+	 is.readLine();
+	 is.readLine();
+	 is.readLine();
+	 if(fileName.equals("emp_affiliations.properties"))
+		 is.readLine();
+	 String lineIn;
+	 ServletOutputStream os = response.getOutputStream();  
+	 Map<Integer, String> propMap = new HashMap<Integer, String>();
+	 while((lineIn = is.readLine()) != null)
+	 {
+		 String[] temp = lineIn.split("=");
+		 if(temp.length == 2)
+			 propMap.put(Integer.parseInt(temp[0]),temp[1]);
+		 else
+			 propMap.put(Integer.parseInt(temp[0]), "");
+	 }
+	 if(fileName.equals("emp_affiliations.properties"))
+		 os.write("##Employee Download - Affiliation code\n#[department code] = [library code]\n".getBytes());
+	 else
+		 os.write("##Staff Group\n".getBytes());
+	 Map<Integer, String> sortedMap = new TreeMap(propMap);
+	 Iterator it = sortedMap.entrySet().iterator();
+	 while(it.hasNext())
+	 {
+		 Map.Entry pairs = (Map.Entry)it.next();
+		 String temp2 = pairs.getKey().toString() + "=" + pairs.getValue() + "\n";
+		 os.write(temp2.getBytes());
+	 } 
+	 os.flush();  
+	 os.close(); 
+	}  
+	
+
 }  
-}  
+
+

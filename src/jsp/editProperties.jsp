@@ -8,19 +8,35 @@
 	String key = request.getParameter("propName");
 	String value = request.getParameter("newPropValue");
 	String target = request.getParameter("target");
-	request.setAttribute("action","edit");
 	if( request.getParameter("action").equals("delete"))
 	{
+		request.setAttribute("action","edit");
 		patronLoad.delProperties(target, key); 
 		request.setAttribute("message", "Key is deleted!");
 	}
+	else if( request.getParameter("action").equals("add"))
+	{
+		if(patronLoad.hasPropertiesKey(target,key))
+		{
+			request.setAttribute("action","keyInvalid");
+			request.setAttribute("propName",key);
+			request.setAttribute("newPropValue",value);
+			request.setAttribute("target",target);
+		}
+		else
+		{
+			request.setAttribute("action","edit");
+			patronLoad.setPropertiesFile(target, key, value); 
+			request.setAttribute("message", "Key is added.");
+		}
+			
+	}
 	else
 	{
-		int output = patronLoad.setPropertiesFile(target, key, value); 
-		if(output == 1)
-			request.setAttribute("message", "Properties Value successfully changed!");
-	 	if(output == 0)
-			request.setAttribute("message", "New Properties was added");
+		request.setAttribute("action","edit");
+		patronLoad.setPropertiesFile(target, key, value); 
+		request.setAttribute("message", "Key is added.");
+		
 	}
 	
 %>
