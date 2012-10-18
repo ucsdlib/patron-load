@@ -899,6 +899,7 @@ public class fullquery_employee {
 						")) " : "")
 					
 					+ ") ORDER BY EMPID, p.emb_employee_name ";
+			
 
 			/*
 			String query =
@@ -1030,14 +1031,16 @@ public class fullquery_employee {
 			//String barcodeQuery = "select distinct v.employee_id, " +
 				//	"v.barcode from idcard_db.dbo.idcard_v v";
 			
-			String barcodeQuery = "select distinct emb_employee_id, bar_code " +
+			/*String barcodeQuery = "select distinct emb_employee_id, bar_code " +
 					"from affiliates_dw.rosetta_stone where emb_person_id != 0 " +
-					"and bar_code != 0";
+					"and bar_code != 0";*/
+			
+			String barcodeQuery = "select distinct emb_person_id, employee_barcode from affiliates_dw.rosetta_stone_barcode_v where emb_person_id != 0 and employee_barcode != ''";
 			
 			employeeBarcode = new HashMap();
 			
 			pstmt = db2Conn.prepareStatement(barcodeQuery);
-			
+			System.out.println("barcode query:"+barcodeQuery);
 			barcodeRS = pstmt.executeQuery();		
 			String barcodeVal = null;
 			String keyVal = null;
