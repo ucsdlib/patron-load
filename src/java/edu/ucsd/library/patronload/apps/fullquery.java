@@ -189,10 +189,10 @@ public class fullquery {
             		"as area_code, substr(A.adr_phone,5,3) as exchange, " +
             		"substr(A.adr_phone,9,4) as sqid, char(' ',4) as extension, " +
             		"A.adr_state, A.adr_zip, A.co_country_code, E.em_address_line, " +
-            		"I.bar_code, E.em_address_type, SI.id from student_db.s_student_term T, " +
+            		"I.student_barcode, E.em_address_type, SI.id from student_db.s_student_term T, " +
             		"student_db.s_address A, " +
             		"(student_db.s_student S LEFT OUTER JOIN student_db.s_email E ON " +
-            		"S.stu_pid = E.stu_pid) LEFT OUTER JOIN affiliates_dw.rosetta_stone I " +
+            		"S.stu_pid = E.stu_pid) LEFT OUTER JOIN affiliates_dw.rosetta_stone_barcode_v I " +
             		"ON S.stu_pid = I.stu_pid "+
             		"LEFT JOIN affiliates_dw.affiliates_safe_attributes SA ON S.stu_pid = SA.pid " +
             		"LEFT JOIN affiliates_dw.system SI ON SA.aid = SI.aid and SI.system_id = 41 " +
@@ -434,8 +434,28 @@ public class fullquery {
                     
                     String term_admn = "sqldse.ADMN" + term + gradType+"_V";
                     String term_stad = "sqldse.STAD" + term + gradType;
-                    
+ 
                     String query = "select S.PID9, S.STUDENT_NAME, '' as ssn, '' as regStatusCode, " +
+            		"'" + term + "' as last_enrolled, char(S.STUDENT_LEV,1) as stu_lev, " +
+            		"S.MAJOR_CODE, A.ADDR_TYPE, rtrim(substr(char(year(A.start_date)),3,4)) " +
+            		"concat rtrim(ltrim(char(month(A.start_date)))) concat " +
+            		"rtrim(ltrim(char(day(A.start_date)))) as startdate, " +
+            		"rtrim(substr(char(year(A.end_date)),3,4)) concat " +
+            		"rtrim(ltrim(char(month(A.end_date)))) concat " +
+            		"rtrim(ltrim(char(day(A.end_date)))) as enddate, A.LINE_ADR1, " +
+            		"A.LINE_ADR2, A.LINE_ADR3, A.LINE_ADR4, A.CITY_NAME, A.AREA_CODE, " +
+            		"A.XCHNG_ID, A.SEQ_ID, char('    ',4) as extension, A.STATE_CO, " +
+            		"A.ZIP_CODE, A.CNTRY_CO, E.EM_EMAIL_LINE, I.student_barcode, E.EM_EMAIL_TYPE, SI.ID from " +
+            		term_stad + " A, (" + term_admn + " S LEFT JOIN " +
+            		"sqldse.PRSNEMAD E ON S.PID9 = E.PID) LEFT JOIN " +
+            		"affiliates_dw.rosetta_stone_barcode_v I ON S.PID9 = I.stu_pid LEFT JOIN affiliates_dw.affiliates_safe_attributes SA ON S.PID9 = SA.pid " +
+            		"LEFT JOIN affiliates_dw.system SI ON SA.aid = SI.aid and SI.system_id = 41 " +
+            		"where S.PID9 = A.PID9 and S.APCT_DECN='ACC' and " +
+            		"(E.EM_EMAIL_TYPE='EMC' or E.EM_EMAIL_TYPE='EMH') " +
+            		//"E.EM_EMAIL_TYPE='EMC' and E.EM_EMAIL_LINE like '%ucsd.edu%' " +
+            		"order by S.PID9, A.START_DATE, A.END_DATE";
+                    
+                   /* String query = "select S.PID9, S.STUDENT_NAME, '' as ssn, '' as regStatusCode, " +
                     		"'" + term + "' as last_enrolled, char(S.STUDENT_LEV,1) as stu_lev, " +
                     		"S.MAJOR_CODE, A.ADDR_TYPE, rtrim(substr(char(year(A.start_date)),3,4)) " +
                     		"concat rtrim(ltrim(char(month(A.start_date)))) concat " +
@@ -453,7 +473,7 @@ public class fullquery {
                     		"where S.PID9 = A.PID9 and S.APCT_DECN='ACC' and " +
                     		"(E.EM_EMAIL_TYPE='EMC' or E.EM_EMAIL_TYPE='EMH') " +
                     		//"E.EM_EMAIL_TYPE='EMC' and E.EM_EMAIL_LINE like '%ucsd.edu%' " +
-                    		"order by S.PID9, A.START_DATE, A.END_DATE";
+                    		"order by S.PID9, A.START_DATE, A.END_DATE";*/
                     // this query gets the student records with a UCSD email
                     // address
                     
