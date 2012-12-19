@@ -2,8 +2,8 @@
 
 <project name="patronload" default="webapp" basedir=".">
 
-<property file="${user.home}/build.properties"/>
-
+<property file="build.properties"/>
+<property name="common.home" value="../common"/>
 
 <property name="src"                 value="${basedir}/src"/>
 <property name="build"               value="${basedir}/build"/>
@@ -53,7 +53,7 @@
 <property name="emp_full_raw_old"     value="${test}/emp_full_raw_old.txt"/>
 <property name="emp_active_raw_file"  value="${test}/emp_active_raw.txt"/>
 <property name="emp_inc_raw_file"     value="${test}/emp_inc_raw.txt"/>
-<property name="common.home" value="../common"/>
+
 <import file="${common.home}/profile.xml"/>
 <import file="${common.home}/remote.xml"/>
 <import file="${common.home}/version.xml"/>
@@ -84,7 +84,7 @@
                 <include name="**/*.*"/>
             </fileset>
             <filterset refid="profile-filters"/>
-           <!-- <filterset refid="version-filters"/> -->
+            <filterset refid="version-filters"/>
         </copy>
     <!--***************************************************************-->
 
