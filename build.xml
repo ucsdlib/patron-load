@@ -3,9 +3,9 @@
 <project name="patronload" default="webapp" basedir=".">
 
 <property file="build.properties"/>
-<property name="common.home" value="../common"/>
 
 <property name="src"                 value="${basedir}/src"/>
+<property name="common.home"         value="${src}/common"/>
 <property name="build"               value="${basedir}/build"/>
 <property name="dist"                value="${basedir}/dist"/>
 <property name="api"                 value="${basedir}/doc/api"/>
