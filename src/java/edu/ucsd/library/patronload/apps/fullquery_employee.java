@@ -1035,21 +1035,19 @@ public class fullquery_employee {
 					"from affiliates_dw.rosetta_stone where emb_person_id != 0 " +
 					"and bar_code != 0";*/
 			
-			String barcodeQuery = "select distinct emb_person_id, employee_barcode from affiliates_dw.rosetta_stone_barcode_v where emb_person_id != 0 and employee_barcode != ''";
+			//String barcodeQuery = "select distinct emb_person_id, employee_barcode from affiliates_dw.rosetta_stone_barcode_v where emb_person_id != 0 and employee_barcode != ''";
+			String barcodeQuery = "select distinct emb_employee_id, employee_barcode from affiliates_dw.rosetta_stone_barcode_v where emb_employee_id != 0 and employee_barcode != ''";
 			
 			employeeBarcode = new HashMap();
 			
 			pstmt = db2Conn.prepareStatement(barcodeQuery);
-			System.out.println("barcode query:"+barcodeQuery);
+			//System.out.println("barcode query:"+barcodeQuery);
 			barcodeRS = pstmt.executeQuery();		
 			String barcodeVal = null;
 			String keyVal = null;
 			while (barcodeRS.next()) {	
 				keyVal = (String)barcodeRS.getString(1);
 				barcodeVal = (String)barcodeRS.getString(2);
-
-
-		        //System.out.println("barcodeVal:"+barcodeVal+"----"+barcodeVal.length());
 				
 		        if(keyVal != null && barcodeVal != null)
 		        	employeeBarcode.put(keyVal.trim(), barcodeVal.trim());	
@@ -1238,7 +1236,7 @@ public class fullquery_employee {
 							
 							//System.out.println("employeeId:"+employeeId + " -- "+empId + 
 								//	"..."+parseRecord(tmp, 12, false));
-							
+
 							if(employeeId != null && employeeBarcode.containsKey(employeeId) && 
 									employeeBarcode.get(employeeId) != null
 									&& ((String)employeeBarcode.get(employeeId)).length() > 0) {

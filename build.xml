@@ -9,7 +9,7 @@
 <property name="build"               value="${basedir}/build"/>
 <property name="dist"                value="${basedir}/dist"/>
 <property name="api"                 value="${basedir}/doc/api"/>
-<property name="lib"                 value="${src}/lib"/>
+<property name="lib"                 value="${basedir}/lib"/>
 <property name="filtered"            value="${basedir}/filtered"/>
 <property name="test"                value="${basedir}/test"/>
 <property name="report"              value="${basedir}/report"/>
@@ -19,12 +19,29 @@
 <property name="compile.deprecation" value="true"/>
 
 <path id="classpath">        
-    <fileset dir="${lib}" id="local-jars">
+    <fileset dir="./src/lib" id="local-jars">
         <include name="*.jar"/>
+    </fileset>
+    <fileset dir="${jars.home}" id="shared-jars">
+        <include name="library_package.jar"/>
     </fileset>
 	<pathelement location="${build}/classes"/>
 </path> 
 	
+<!--path id="classpath">
+ 
+ <fileset dir="${jars.home}" id="jars">
+  
+  <include name="pmd.jar"/>
+  <include name="checkstyle.jar"/>
+  
+  <include name="jconn.jar"/>
+  <include name="jox.jar"/>
+  <include name="dtd_parser.jar"/>
+ </fileset>
+ <pathelement location="${build}/classes"/>
+</path-->
+
 <property name="full_raw_file"        value="${test}/full_raw.txt"/>
 <property name="full_merge_file"      value="${test}/full_merge.txt"/>
 <property name="full_marc_file"       value="${test}/full_marc.txt"/>
@@ -36,6 +53,10 @@
 <property name="emp_full_raw_old"     value="${test}/emp_full_raw_old.txt"/>
 <property name="emp_active_raw_file"  value="${test}/emp_active_raw.txt"/>
 <property name="emp_inc_raw_file"     value="${test}/emp_inc_raw.txt"/>
+
+<import file="${common.home}/profile.xml"/>
+<import file="${common.home}/remote.xml"/>
+<import file="${common.home}/version.xml"/>
 
 <!--======================================================================-->
 <!-- PREPARE -->
@@ -52,33 +73,6 @@
 </target>
 
 <!--======================================================================-->
-<!-- VERSION -->
-<!--======================================================================-->
-<target name="version" description="Create version properties">
-  <propertyfile file="version.properties" comment="${comment}">
-    <entry key="major.version" default="0"/>
-    <entry key="minor.version" default="0"/>
-    <entry key="build.number" type="int" operation="+" value="1" pattern="#####"/>
-    <entry key="user.version" default=""/>
-  </propertyfile>
-  <tstamp>
-    <format property="build_date" pattern="yyyy-MM-dd"/>
-    <format property="build_time" pattern="HH:mm:ss"/>
-  </tstamp>
-  <property file="version.properties"/>
-  <property name="version_string" value="${major.version}.${minor.version}.${build.number}"/>
-
-  <!-- filters -->
-  <filterset id="version-filters">
-    <filter token="version_string"     value="${version_string}"/>
-    <filter token="build_date"     value="${build_date}"/>
-    <filter token="build_time"     value="${build_time}"/>
-    <filter token="user_name"      value="${user.name}"/>
-  </filterset>
-  <echo level="info" message="version: ${version_string}"/>
-  <echo level="info" message="built..: ${build_date} ${build_time} by ${user_name}"/>
-</target>
-<!--======================================================================-->
 <!-- COMPILE -->
 <!--======================================================================-->
 <target name="compile" depends="clean, prepare, version"
@@ -89,17 +83,17 @@
             <fileset dir="${src}">
                 <include name="**/*.*"/>
             </fileset>
+            <filterset refid="profile-filters"/>
             <filterset refid="version-filters"/>
         </copy>
     <!--***************************************************************-->
 
     <javac debug="${compile.debug}" deprecation="${compile.deprecation}" 
-        destdir="${build}/classes" srcdir="${filtered}/java" source="1.5"
-        target="1.5" includeantruntime="false">
+        destdir="${build}/classes" srcdir="${filtered}/java" target="1.5">
         <classpath refid="classpath"/>
 
         <classpath>
-         <pathelement location="${lib}/servlet.jar"/>
+         <pathelement location="${jars.home}/servlet.jar"/>
         </classpath>
     </javac>
 
@@ -193,12 +187,8 @@
         <webinf dir="${filtered}/webinf" excludes="web.xml" />
         <metainf dir="${filtered}/metainf"/>
         <!--lib refid="jars" /-->
-        <lib dir="${lib}">
+        <lib dir="./src/lib">
             <exclude name="servlet.jar"/>
-            <exclude name="catalina-ant.jar"/>
-            <exclude name="tomcat-coyote.jar"/>
-            <exclude name="tomcat-juli.jar"/>
-            <exclude name="tomcat-util.jar"/>
         </lib>
     </war>
 </target>
@@ -469,27 +459,6 @@
     
 </target>
 
-  <!-- remote deployment -->
-  <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask"
-      classpathref="classpath"/>
-  <taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask"
-      classpathref="classpath"/>
-  <target name="remote-redeploy"
-      description="Undeploy and then redeploy webapp to remote tomcat">
-    <antcall target="remote-undeploy"/>
-    <waitfor maxwait="1000" maxwaitunit="millisecond">
-      <equals arg1="1" arg2="2"/>
-    </waitfor>
-    <antcall target="remote-deploy"/>
-  </target>
-  <target name="remote-deploy" description="Deploy webapp to remote tomcat">
-    <echo level="info" message="war = 'file://${dist}/${appName}.war'"/>
-    <deploy url="http://${manager.host}:8080/manager/text" path="/${appName}"
-        username="${manager.user}" password="${manager.pass}"
-        war="file://${dist}/${appName}.war"/>
-  </target>
-  <target name="remote-undeploy" description="Remove webapp from remote tomcat">
-    <undeploy url="http://${manager.host}:8080/manager/text" path="/${appName}"
-          username="${manager.user}" password="${manager.pass}" failonerror="false"/>
-  </target>
+
+
 </project>
