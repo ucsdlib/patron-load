@@ -450,7 +450,7 @@ public class fullquery {
             		"sqldse.PRSNEMAD E ON S.PID9 = E.PID) LEFT JOIN " +
             		"affiliates_dw.rosetta_stone_barcode_v I ON S.PID9 = I.stu_pid LEFT JOIN affiliates_dw.affiliates_safe_attributes SA ON S.PID9 = SA.pid " +
             		"LEFT JOIN affiliates_dw.system SI ON SA.aid = SI.aid and SI.system_id = 41 " +
-            		"where S.PID9 = A.PID9 and S.APCT_DECN='ACC' and " +
+            		"where S.PID9 = A.PID9 and S.APCT_DECN IN ('ACC','READ') and " +
             		"(E.EM_EMAIL_TYPE='EMC' or E.EM_EMAIL_TYPE='EMH') " +
             		//"E.EM_EMAIL_TYPE='EMC' and E.EM_EMAIL_LINE like '%ucsd.edu%' " +
             		"order by S.PID9, A.START_DATE, A.END_DATE";
