@@ -70,7 +70,7 @@ public class fullquery {
             pw = new PrintWriter(new BufferedOutputStream(new FileOutputStream(
                     fileToWrite)));
 
-            getRawData(pathToProperties, pw);
+            //getRawData(pathToProperties, pw);
             //getAcceptedGrads(pathToProperties, pw);
             getGradStudentData(pathToProperties, pw);
 
