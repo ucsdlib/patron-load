@@ -70,7 +70,7 @@ public class fullquery {
             pw = new PrintWriter(new BufferedOutputStream(new FileOutputStream(
                     fileToWrite)));
 
-            //getRawData(pathToProperties, pw);
+            getRawData(pathToProperties, pw);
             //getAcceptedGrads(pathToProperties, pw);
             getGradStudentData(pathToProperties, pw);
 
@@ -402,7 +402,7 @@ public class fullquery {
             		"adr_address_type = 'PM') and stt_registration_status_code in " +
             		"('EN', 'RG') and T.stt_academic_level in ('GR','MD','PH') and "+
             		"(E.em_address_type = 'EMC' or E.em_address_type = 'EMH' or E.em_address_type is null) and " +
-            		"(E.em_end_date is null or E.em_end_date !< current date) " +
+            		"(E.em_end_date is null or E.em_end_date < current date) " +
             		"order by S.stu_pid, A.adr_start_date, A.adr_end_date ";
 
           
