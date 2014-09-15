@@ -90,8 +90,9 @@ public class incquery {
                     fileToWrite)));
 
             getRawData(pathToProperties, pw);
-            getAcceptedGrads(pathToProperties, pw);
-
+            //getAcceptedGrads(pathToProperties, pw);
+            getGradStudentData(pathToProperties, pw);
+            
             if (pw != null)
                 pw.close();
 
@@ -322,6 +323,156 @@ public class incquery {
         }
     }
 
+    /**
+     * Method to retreive Grad Students data from database and output to raw file.
+     * 
+     * @param pathToProperties
+     *            Path to the properties file
+     * @param fileToWrite
+     *            Path to the file to write results to
+     */
+    public static void getGradStudentData(String pathToProperties, PrintWriter pw) {
+
+        if (!pathToProperties.equals("")) {
+            pathToProperties += File.separator;
+        }
+
+        // load the properties file to get the current quarter code
+        Properties myProp = null;
+        try {
+            myProp = FileUtils.loadProperties(pathToProperties
+                    + "patron_load.properties");
+        } catch (IOException ioe) {
+            System.out.println("Error loading properties file in fullquery.getGradStudentData!");
+            //System.exit(1);
+            return;
+        }
+
+        String trm_term_code = "";
+        String term = (String) myProp.get("quartercode");
+        term = term.trim();
+
+        
+        trm_term_code = "T.trm_term_code = '" + term + "' and ";
+        String year = term.substring(2, term.length());
+        
+        String db2Driver = (String) myProp.get("db2driver");
+		String db2Username = (String) myProp.get("db2username");
+		String db2Password = (String) myProp.get("db2password");
+		String db2Connection = (String) myProp.get("db2connection");
+		
+		if (term.toUpperCase().startsWith("SU")) {
+            trm_term_code = "(";
+            trm_term_code += "T.trm_term_code = 'FA" + year + "'";
+            trm_term_code += ") and ";
+        }
+
+        try {
+        	Class.forName(db2Driver).newInstance();
+            //Class.forName(dbDriver).newInstance();          
+        } catch (Exception E) {
+            System.err.println("Error: Unable to load driver: " + db2Driver);
+            E.printStackTrace();
+            System.exit(1);
+        }
+
+        Statement stmt = null;
+        //Connection conn = null;
+        ResultSet rs = null;
+        Connection db2Conn = null;
+        
+        try {
+
+			db2Conn = DriverManager.getConnection(
+					db2Connection,
+					db2Username,
+					db2Password);
+			
+            stmt = db2Conn.createStatement();
+
+            String query = "select S.stu_pid, S.stu_name,'' as ssn, " +
+            		"T.stt_registration_status_code, '"+ term +"' as last_enrolled, " +
+            		"substr(T.stt_academic_level,1,1) as academic_level, T.maj_major_code, " +
+            		"A.adr_address_type, rtrim(substr(char(year(A.adr_start_date)),3,4)) " +
+            		"concat rtrim(ltrim(char(month(A.adr_start_date)))) concat " +
+            		"rtrim(ltrim(char(day(A.adr_start_date)))) as startdate, " +
+            		"rtrim(substr(char(year(A.adr_end_date)),3,4)) concat " +
+            		"rtrim(ltrim(char(month(A.adr_end_date)))) concat " +
+            		"rtrim(ltrim(char(day(A.adr_end_date)))) as stopdate, " +
+            		"A.adr_address_line_1, A.adr_address_line_2, A.adr_address_line_3, " +
+            		"A.adr_address_line_4, A.adr_city, substr(A.adr_phone,1,3) " +
+            		"as area_code, substr(A.adr_phone,5,3) as exchange, " +
+            		"substr(A.adr_phone,9,4) as sqid, char(' ',4) as extension, " +
+            		"A.adr_state, A.adr_zip, A.co_country_code, E.em_address_line, " +
+            		"I.student_barcode, E.em_address_type, SI.id from student_db.s_student_term T, " +
+            		"student_db.s_address A, " +
+            		"(student_db.s_student S LEFT OUTER JOIN student_db.s_email E ON " +
+            		"S.stu_pid = E.stu_pid) LEFT OUTER JOIN affiliates_dw.rosetta_stone_barcode_v I " +
+            		"ON S.stu_pid = I.stu_pid "+
+            		"LEFT JOIN affiliates_dw.affiliates_safe_attributes SA ON S.stu_pid = SA.pid " +
+            		"LEFT JOIN affiliates_dw.system SI ON SA.aid = SI.aid and SI.system_id = 41 " +
+            		"where (S.stu_pid = T.stu_pid) and " +
+            		trm_term_code + " T.stt_major_primary_flag = 'Y' and " +
+            		"T.stu_pid = A.stu_pid and (adr_address_type = 'CM' or " +
+            		"adr_address_type = 'PM') and stt_registration_status_code in " +
+            		"('EN', 'RG') and T.stt_academic_level in ('GR','MD','PH') and "+
+            		"(E.em_address_type = 'EMC' or E.em_address_type = 'EMH' or E.em_address_type is null) and " +
+            		"(E.em_end_date is null or E.em_end_date < current date) " +
+                    " and A.refresh_date >= '" + getYesterday() + "' " +
+            		"order by S.stu_pid, A.adr_start_date, A.adr_end_date ";
+           
+            try {
+               
+                FileUtils.confirmDir(marcFilesDir);
+                FileUtils.stringToFile(query, marcFilesDir
+                        + "full_query_all_grad_students.sql");
+            } catch (IOException ioe) {
+            }
+
+            //System.out.println(query);
+            rs = stmt.executeQuery(query);
+
+            ResultSetMetaData rsms = rs.getMetaData();
+            int numcol = rsms.getColumnCount();
+            while (rs.next()) {
+
+                for (int i = 1; i <= numcol; i++) {
+                    String tmpStr = rs.getString(i);
+
+                    if ((tmpStr == null) || (tmpStr.trim().toLowerCase().equals(""))) {
+                        // Put in question mark if its null or blank
+                        tmpStr = "?";
+                    }
+                    
+                    if (i == 1) {
+                        //--get a list of all the student IDs
+                        student_ids.put(tmpStr.toLowerCase().trim(), "");
+                    }
+
+                    pw.print(tmpStr);
+                    pw.print("\t");
+                }
+                pw.print("\n");
+            }
+
+        } catch (SQLException ex) {
+            System.err.println("Exception: " + ex);
+            //ex.printStackTrace(System.out);
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (stmt != null)
+                    stmt.close();
+                /*if (conn != null)
+                    conn.close();*/
+                if (db2Conn != null)
+					db2Conn.close();
+            } catch (SQLException e) {
+            }
+        }
+    }
+    
     /**
      * Method to retreive accepted Grad studdent data from database and output
      * to raw file.
