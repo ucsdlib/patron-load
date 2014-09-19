@@ -60,9 +60,9 @@ public class scheduler extends HttpServlet {
 		    fullquery.setMarcFilesDir(marcFilesDir);	
 		    System.out.println(
 			"***Patronload Scheduler Status: running Date" + new java.util.Date());
-			edu.ucsd.library.patronload.apps.doinc.main(tmp);
+			//edu.ucsd.library.patronload.apps.doinc.main(tmp);
 			// generate the incremental employee marc file 
-			edu.ucsd.library.patronload.apps.doinc_employee.main(tmp);
+			//edu.ucsd.library.patronload.apps.doinc_employee.main(tmp);
 			System.out.println("***Patronload Scheduler Status: Done Date" + new java.util.Date());
 		}
 
