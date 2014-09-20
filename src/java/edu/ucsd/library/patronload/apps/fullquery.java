@@ -72,7 +72,7 @@ public class fullquery {
 
             getRawData(pathToProperties, pw);
             //getAcceptedGrads(pathToProperties, pw);
-            //getGradStudentData(pathToProperties, pw);
+            getGradStudentData(pathToProperties, pw);
 
             if (pw != null)
                 pw.close();
