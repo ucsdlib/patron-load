@@ -201,7 +201,7 @@ public class fullquery {
             		trm_term_code + " T.stt_major_primary_flag = 'Y' and " +
             		"T.stu_pid = A.stu_pid and (adr_address_type = 'CM' or " +
             		"adr_address_type = 'PM') and stt_registration_status_code in " +
-            		"('EN', 'RG') and (E.em_address_type = 'EMC' or E.em_address_type = 'EMH' or E.em_address_type is null)and " +
+            		"('EN', 'RG') and T.stt_academic_level in ('UN') and (E.em_address_type = 'EMC' or E.em_address_type = 'EMH' or E.em_address_type is null)and " +
             		//"E.em_address_line like '%ucsd.edu%' and " +
             		"(E.em_end_date is null or E.em_end_date !< current date) " +
             		"order by S.stu_pid, A.adr_start_date, A.adr_end_date ";
