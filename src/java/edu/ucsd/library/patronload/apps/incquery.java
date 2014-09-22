@@ -217,7 +217,7 @@ public class incquery {
     		trm_term_code + " T.stt_major_primary_flag = 'Y' and " +
     		"T.stu_pid = A.stu_pid and (adr_address_type = 'CM' or " +
     		"adr_address_type = 'PM') and stt_registration_status_code in " +
-    		"('EN', 'RG') and (E.em_address_type = 'EMC' or E.em_address_type = 'EMH')and " +
+    		"('EN', 'RG') and T.stt_academic_level in ('UN') and (E.em_address_type = 'EMC' or E.em_address_type = 'EMH')and " +
     		//"E.em_address_line like '%ucsd.edu%' and " +
     		"(E.em_end_date is null or E.em_end_date !< current date) " +
             " and A.refresh_date >= '" + getYesterday() + "' " +
