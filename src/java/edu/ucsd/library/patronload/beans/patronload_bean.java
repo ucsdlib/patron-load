@@ -144,9 +144,15 @@ public class patronload_bean {
 		if (in.equals("SP14")) quarterCodeLetter = "m";
 		if (in.equals("SU14")) quarterCodeLetter = "n";
 		if (in.equals("FA14")) quarterCodeLetter = "o";
-		if (in.equals("WI15")) quarterCodeLetter = "p";
+		if (in.equals("WI15")) quarterCodeLetter = "p";		
+		if (in.equals("SP15")) quarterCodeLetter = "q";
+		if (in.equals("SU15")) quarterCodeLetter = "r";
+		if (in.equals("FA15")) quarterCodeLetter = "s";
+		if (in.equals("WI16")) quarterCodeLetter = "t";
+		if (in.equals("SP16")) quarterCodeLetter = "u";
+		if (in.equals("SU16")) quarterCodeLetter = "v";
+		if (in.equals("FA16")) quarterCodeLetter = "w";
 		
-
 		return 	quarterCodeLetter;
 	}
     
