@@ -146,7 +146,7 @@ public class fullquery_employee {
 		String[] array = in.split("\t");
 
 		  //remove leading zeros except in mailcode case
-		if(num != 14) {
+		if(num != 17) {
 			array[num] = removeLeadingZeros(array[num]);	
 			return array[num];
 		} else
@@ -868,7 +868,10 @@ public class fullquery_employee {
 					+ "ph.employee_email EMAIL, " 
 					//+ "v.barcode BARCODE, " 
 					+ "p.emb_employee_id, "
-					+ "p2.dis_end_date " 
+					+ "p2.dis_end_date, "
+					+ "p.emp_last_name, "
+					+ "p.emp_first_name, "
+					+ "p.emp_middle_name "
 					+ " FROM " 
 					+ " employee.p_employee_fin_view p LEFT OUTER JOIN phone.employee ph "
 					+ " ON ph.emb_employee_number = p.emb_person_id , "
@@ -1137,8 +1140,15 @@ public class fullquery_employee {
 							writeOut.append(parseRecord(tmp, 0) + "\t");
 							
 							//write out the employee name
-							writeOut.append(parseRecord(tmp, 1) + "\t");
+							//writeOut.append(parseRecord(tmp, 1) + "\t");
+							String middleName = parseRecord(tmp, 16).trim();
+							if(middleName.length() > 0)
+								middleName = " " + middleName;
+							else
+								middleName = "";
 							
+							writeOut.append(parseRecord(tmp, 14).trim() + ", "+ parseRecord(tmp, 15).trim() + middleName + "\t");
+
 							//write out the employment status code:
 							//--if emeritus, write out "A" for active
 							if (isEmeritusTitleCode(parseRecord(tmp, 4))) {
