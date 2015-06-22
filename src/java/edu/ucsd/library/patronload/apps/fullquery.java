@@ -347,8 +347,12 @@ public class fullquery {
 		String db2Connection = (String) myProp.get("db2connection");
 		
 		if (term.toUpperCase().startsWith("SU")) {
-            trm_term_code = "(";
-            trm_term_code += "T.trm_term_code = 'FA" + year + "'";
+			trm_term_code = "(";
+            trm_term_code += "(T.trm_term_code = 'S1" + year + "') or ";
+            trm_term_code += "(T.trm_term_code = 'S2" + year + "') or ";
+            trm_term_code += "(T.trm_term_code = 'S3" + year + "') or ";
+            trm_term_code += "(T.trm_term_code = 'FA" + year + "') or ";
+            trm_term_code += "(T.trm_term_code = 'SU" + year + "')";
             trm_term_code += ") and ";
         }
 
