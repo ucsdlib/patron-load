@@ -1,7 +1,7 @@
 package edu.ucsd.library.patronload.apps;
 
 /*
- * scheduler.java
+ * schedulerEmp.java
  *
  * Created on June 25, 2002, 1:44 PM;
  */
@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import edu.ucsd.library.util.FileUtils;
 
-public class scheduler extends HttpServlet {
+public class schedulerEmp extends HttpServlet {
 
 	class RemindTask extends TimerTask {
 
@@ -59,10 +59,10 @@ public class scheduler extends HttpServlet {
 			incquery.setMarcFilesDir(marcFilesDir);
 		    fullquery.setMarcFilesDir(marcFilesDir);	
 		    System.out.println(
-			"***Patronload Scheduler Status: student marc file - running Date" + new java.util.Date());
-			edu.ucsd.library.patronload.apps.doinc.main(tmp);
+			"***Patronload Scheduler Status: employee marc file - running Date" + new java.util.Date());
+			//edu.ucsd.library.patronload.apps.doinc.main(tmp);
 			// generate the incremental employee marc file 
-			//edu.ucsd.library.patronload.apps.doinc_employee.main(tmp);
+			edu.ucsd.library.patronload.apps.doinc_employee.main(tmp);
 			System.out.println("***Patronload Scheduler Status: Done Date" + new java.util.Date());
 		}
 
@@ -99,7 +99,7 @@ public class scheduler extends HttpServlet {
 
 	public void runme(String contextDir) {
 		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.HOUR_OF_DAY, 2);
+		calendar.set(Calendar.HOUR_OF_DAY, 1);
 		calendar.set(Calendar.MINUTE, 01);
 		calendar.set(Calendar.SECOND, 0);
 		Date time = calendar.getTime();
