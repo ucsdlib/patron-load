@@ -165,13 +165,6 @@ function logout() {
 
 </table>
 
-<br><br>
-<font color="#FFFFFF" size="-1">
-<center>
-build date: @build_date@
-</center>
-</font>
-
 
 </BODY>
 </HTML>
