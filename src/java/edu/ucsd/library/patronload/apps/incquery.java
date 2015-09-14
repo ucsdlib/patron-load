@@ -208,7 +208,7 @@ public class incquery {
 			"A.adr_state, A.adr_zip, A.co_country_code, E.em_address_line, " +
 			"I.student_barcode, E.em_address_type, SI.id from student_db.s_student S " +
 			"inner join student_db.s_student_term T on S.stu_pid = T.stu_pid and " +
-			trm_term_code+" and T.stt_major_primary_flag = 'Y' and " +
+			trm_term_code+" T.stt_major_primary_flag = 'Y' and " +
 			"stt_registration_status_code in ('EN', 'RG') and T.stt_academic_level in ('UN') " +
 			"inner join student_db.s_address A on T.stu_pid = A.stu_pid and " +
 			"(adr_address_type = 'CM' or adr_address_type = 'PM') left outer join student_db.s_email E " +
@@ -434,8 +434,7 @@ public class incquery {
     		"A.adr_state, A.adr_zip, A.co_country_code, E.em_address_line, " +
     		"I.student_barcode, E.em_address_type, SI.id from student_db.s_student S " +
     		"inner join student_db.s_student_term T on S.stu_pid = T.stu_pid and " +
-    		trm_term_code+" and " +
-    		"T.stt_major_primary_flag = 'Y' and stt_registration_status_code in ('EN', 'RG') and " +
+    		trm_term_code+" T.stt_major_primary_flag = 'Y' and stt_registration_status_code in ('EN', 'RG') and " +
     		"T.stt_academic_level in ('GR','MD','PH') inner join student_db.s_address A on " +
     		"T.stu_pid = A.stu_pid and (adr_address_type = 'CM' or adr_address_type = 'PM') " +
     		"left outer join student_db.s_email E ON S.stu_pid = E.stu_pid and (E.em_address_type = 'EMC' " +
