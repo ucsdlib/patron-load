@@ -4,8 +4,7 @@
 <HEAD>
 <TITLE>menu</TITLE>
 
-<!--script src="../html/scripts/detect_browser.js"></script-->
-<script type="text/javascript" src="https://lib-jira.ucsd.edu:8443/s/a5311705a2bbcbc6d824715190e3efb0-T/en_US-abc0gi/64025/6/1.4.27/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=b147091c"></script>
+<script src="../html/scripts/detect_browser.js"></script>
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
