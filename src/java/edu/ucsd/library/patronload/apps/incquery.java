@@ -210,14 +210,13 @@ public class incquery {
 			"inner join student_db.s_student_term T on S.stu_pid = T.stu_pid and " +
 			trm_term_code+" T.stt_major_primary_flag = 'Y' and " +
 			"stt_registration_status_code in ('EN', 'RG') and T.stt_academic_level in ('UN') " +
-			"inner join student_db.s_address A on T.stu_pid = A.stu_pid and " +
+			"inner join student_db.s_address A on T.stu_pid = A.stu_pid and A.refresh_date >= '" + getYesterday() + "' and " +
 			"(adr_address_type = 'CM' or adr_address_type = 'PM') left outer join student_db.s_email E " +
 			"ON S.stu_pid = E.stu_pid and (E.em_address_type = 'EMC' or E.em_address_type = 'EMH' or E.em_address_type is null) " +
 			"and (E.em_end_date is null or E.em_end_date !< current date) LEFT OUTER JOIN " +
 			"affiliates_dw.rosetta_stone_barcode_v I ON S.stu_pid = I.stu_pid " +
 			"LEFT JOIN affiliates_dw.affiliates_safe_attributes SA ON S.stu_pid = SA.pid " +
 			"LEFT JOIN affiliates_dw.system SI ON SA.aid = SI.aid and SI.system_id = 41 " +
-    		"and A.refresh_date >= '" + getYesterday() + "' " +
 			"order by S.stu_pid, A.adr_start_date, A.adr_end_date";
             
             /*query before the DB2 upgrade
@@ -436,13 +435,12 @@ public class incquery {
     		"inner join student_db.s_student_term T on S.stu_pid = T.stu_pid and " +
     		trm_term_code+" T.stt_major_primary_flag = 'Y' and stt_registration_status_code in ('EN', 'RG') and " +
     		"T.stt_academic_level in ('GR','MD','PH') inner join student_db.s_address A on " +
-    		"T.stu_pid = A.stu_pid and (adr_address_type = 'CM' or adr_address_type = 'PM') " +
+    		"T.stu_pid = A.stu_pid and A.refresh_date >= '" + getYesterday() + "' and (adr_address_type = 'CM' or adr_address_type = 'PM') " +
     		"left outer join student_db.s_email E ON S.stu_pid = E.stu_pid and (E.em_address_type = 'EMC' " +
     		"or E.em_address_type = 'EMH' or E.em_address_type is null) and (E.em_end_date is null or " +
     		"E.em_end_date !< current date) LEFT OUTER JOIN affiliates_dw.rosetta_stone_barcode_v I " +
     		"ON S.stu_pid = I.stu_pid LEFT JOIN affiliates_dw.affiliates_safe_attributes SA " +
     		"ON S.stu_pid = SA.pid LEFT JOIN affiliates_dw.system SI ON SA.aid = SI.aid and SI.system_id = 41 " +
-    		"and A.refresh_date >= '" + getYesterday() + "' " +
     		"order by S.stu_pid, A.adr_start_date, A.adr_end_date";
             
             /*
