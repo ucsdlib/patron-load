@@ -31,35 +31,51 @@ public void doGet(HttpServletRequest request, HttpServletResponse response) thro
 	 response.setHeader("Content-Disposition","attachment;filename=" + fileName);
 	 ServletContext ctx = getServletContext();
 	 String marcFilesDir = ctx.getInitParameter("marcFilePath");
+	 boolean readPatronFile = false;
+	 
 	 BufferedReader is = new BufferedReader(new FileReader(marcFilesDir + fileName));
 	 is.readLine();
 	 is.readLine();
 	 is.readLine();
+	 if(fileName.equals("patron_load.properties")) {
+		 readPatronFile = true;
+		 is.readLine();
+	 }
 	 if(fileName.equals("emp_affiliations.properties"))
 		 is.readLine();
 	 String lineIn;
 	 ServletOutputStream os = response.getOutputStream();  
 	 Map<Integer, String> propMap = new HashMap<Integer, String>();
-	 while((lineIn = is.readLine()) != null)
-	 {
-		 String[] temp = lineIn.split("=");
-		 if(temp.length == 2)
-			 propMap.put(Integer.parseInt(temp[0]),temp[1]);
+	 Map<String, String> patronMap = new HashMap<String, String>();
+	 
+	 if (readPatronFile) {
+		 while((lineIn = is.readLine()) != null)
+		 {
+			 if(!lineIn.contains("db") && !lineIn.contains("expire"))
+				 os.write(lineIn.getBytes());
+		 }		 
+	 } else {
+		 while((lineIn = is.readLine()) != null)
+		 {
+			 String[] temp = lineIn.split("=");
+			 if(temp.length == 2)
+				 propMap.put(Integer.parseInt(temp[0]),temp[1]);
+			 else
+				 propMap.put(Integer.parseInt(temp[0]), "");
+		 }
+		 if(fileName.equals("emp_affiliations.properties"))
+			 os.write("##Employee Download - Affiliation code\n#[department code] = [library code]\n".getBytes());
 		 else
-			 propMap.put(Integer.parseInt(temp[0]), "");
+			 os.write("##Staff Group\n".getBytes());
+		 Map<Integer, String> sortedMap = new TreeMap(propMap);
+		 Iterator it = sortedMap.entrySet().iterator();
+		 while(it.hasNext())
+		 {
+			 Map.Entry pairs = (Map.Entry)it.next();
+			 String temp2 = pairs.getKey().toString() + "=" + pairs.getValue() + "\n";
+			 os.write(temp2.getBytes());
+		 }
 	 }
-	 if(fileName.equals("emp_affiliations.properties"))
-		 os.write("##Employee Download - Affiliation code\n#[department code] = [library code]\n".getBytes());
-	 else
-		 os.write("##Staff Group\n".getBytes());
-	 Map<Integer, String> sortedMap = new TreeMap(propMap);
-	 Iterator it = sortedMap.entrySet().iterator();
-	 while(it.hasNext())
-	 {
-		 Map.Entry pairs = (Map.Entry)it.next();
-		 String temp2 = pairs.getKey().toString() + "=" + pairs.getValue() + "\n";
-		 os.write(temp2.getBytes());
-	 } 
 	 os.flush();  
 	 os.close(); 
 	}  
