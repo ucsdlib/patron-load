@@ -79,9 +79,7 @@ function getUrlVars() {
 <font face="Verdana, Arial, sans-serif" size=2  color="#FFFFFF">
 <b><%=listName%></b>
 </br>
-<% if(!listName.equals("Patron Load Properties")) {%>
-<a href=<%=dLink%> style="position:absolute;right:0px"> Download here</a>  
-<%} %>
+<a href=<%=dLink%> style="position:absolute;right:0px"> Download here</a>
 </font>
 </br>
 <table border="1" style="width:400;margin:auto;text-align:center;">
