@@ -49,10 +49,12 @@ public void doGet(HttpServletRequest request, HttpServletResponse response) thro
 	 Map<String, String> patronMap = new HashMap<String, String>();
 	 
 	 if (readPatronFile) {
+		 String inTmp = "";
 		 while((lineIn = is.readLine()) != null)
 		 {
+			 inTmp = lineIn + "\n";
 			 if(!lineIn.contains("db") && !lineIn.contains("expire"))
-				 os.write(lineIn.getBytes());
+				 os.write(inTmp.getBytes());
 		 }		 
 	 } else {
 		 while((lineIn = is.readLine()) != null)
