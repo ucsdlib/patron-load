@@ -79,8 +79,10 @@ public void doGet(HttpServletRequest request, HttpServletResponse response) thro
 	 while(it.hasNext())
 	 {
 		 Map.Entry pairs = (Map.Entry)it.next();
-		 String temp2 = pairs.getKey().toString() + "=" + pairs.getValue() + "\n";
-		 os.write(temp2.getBytes());
+		 if(pairs.getKey().toString().length() > 0) {
+			String temp2 = pairs.getKey().toString() + "=" + pairs.getValue() + "\n";
+		 	os.write(temp2.getBytes());
+		 }
 	 }
 	 
 	 os.flush();  
