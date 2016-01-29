@@ -68,6 +68,7 @@ public void doGet(HttpServletRequest request, HttpServletResponse response) thro
 			else
 				propMap.put(Integer.parseInt(temp[0]), "");
 		 }
+		 sortedMap = new TreeMap(propMap);
 		 if(fileName.equals("emp_affiliations.properties"))
 			 os.write("##Employee Download - Affiliation code\n#[department code] = [library code]\n".getBytes());
 		 else
