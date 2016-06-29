@@ -903,7 +903,7 @@ public class fullquery_employee {
 					
 					+ ") ORDER BY EMPID, p.emb_employee_name ";
 			
-
+System.out.println ("full active employee query:"+query);
 			/*
 			String query =
 				"SELECT DISTINCT "

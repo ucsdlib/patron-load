@@ -164,15 +164,6 @@ function logout() {
 
 </table>
 
-<br><br>
-<font color="#FFFFFF" size="-1">
-<center>
-post your bug reports <a href="bug-report/bug_report.jsp" target="_new">here</a>
-<br>
-build date: @build_date@
-</center>
-</font>
-
 
 </BODY>
 </HTML>

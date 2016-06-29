@@ -44,6 +44,12 @@
     <load-on-startup>1</load-on-startup>
    </servlet>
 
+  <servlet>
+   <servlet-name>schedulerEmp</servlet-name>
+    <servlet-class>edu.ucsd.library.patronload.apps.schedulerEmp</servlet-class>
+    <load-on-startup>1</load-on-startup>
+   </servlet>
+   
   <servlet-mapping>
     <servlet-name>getmarcfile</servlet-name>
     <url-pattern>/getmarcfile</url-pattern>

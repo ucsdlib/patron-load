@@ -925,8 +925,8 @@ public class patronload_bean {
 	        for (; e.hasMoreElements(); ) {
 	            String propName = (String)e.nextElement();
 	            String propValue = (String)props.get(propName);
-	            if(propValue.length() < 5)
-	            	propMap.put(propName, propValue);
+	            if(propValue.length() < 5 && !propName.contains("quartercode"))
+	            		propMap.put(propName, propValue);
 	        }    
 	        sortedMap = new TreeMap(propMap);
         }
