@@ -54,7 +54,7 @@
 
 		String userName = request.getParameter("login").trim();
 		String password = request.getParameter("password").trim();
-		
+			
 		if (patronLoad.checkLogon(userName, password)) {
 			session.setAttribute("username", request.getParameter("login"));
 		
