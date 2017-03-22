@@ -4,7 +4,6 @@
 	if (session.getAttribute("username") == null) {
 		%> <jsp:forward page="error_pages/no_cookie_support.jsp"/> <%
 	}
-
 %>
 
 <html>

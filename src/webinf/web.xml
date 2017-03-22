@@ -10,8 +10,8 @@
    version="2.5"> 
   <context-param>
     <param-name>marcFilePath</param-name>
+    <!-- param-value>/Users/tchu/pub/data2/patronload/</param-value-->
     <param-value>/pub/data1/import/htdocs/patronload/</param-value>
-    <!--param-value>C:\\vivian\\patronloadDb2\\</param-value-->
     <description>Path where marc files are written</description>
   </context-param>
 
@@ -37,7 +37,12 @@
    <servlet-name>getmarcfile</servlet-name>
     <servlet-class>edu.ucsd.library.patronload.apps.getmarcfile</servlet-class>
   </servlet>
-  
+
+  <servlet>
+   <servlet-name>getcsvfile</servlet-name>
+    <servlet-class>edu.ucsd.library.patronload.apps.getcsvfile</servlet-class>
+  </servlet>
+    
   <servlet>
    <servlet-name>scheduler</servlet-name>
     <servlet-class>edu.ucsd.library.patronload.apps.scheduler</servlet-class>
@@ -49,13 +54,23 @@
     <servlet-class>edu.ucsd.library.patronload.apps.schedulerEmp</servlet-class>
     <load-on-startup>1</load-on-startup>
    </servlet>
-   
+
+  <servlet>
+   <servlet-name>schedulerCsv</servlet-name>
+    <servlet-class>edu.ucsd.library.patronload.apps.schedulerCsv</servlet-class>
+    <load-on-startup>1</load-on-startup>
+   </servlet>
+      
   <servlet-mapping>
     <servlet-name>getmarcfile</servlet-name>
     <url-pattern>/getmarcfile</url-pattern>
   </servlet-mapping>
 
- 
+  <servlet-mapping>
+    <servlet-name>getcsvfile</servlet-name>
+    <url-pattern>/getcsvfile</url-pattern>
+  </servlet-mapping>
+   
  <servlet>   
      <servlet-name>downloadProperties</servlet-name>   
      <servlet-class>edu.ucsd.library.patronload.apps.downloadProperties</servlet-class>   

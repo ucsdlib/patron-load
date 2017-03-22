@@ -647,6 +647,50 @@ public class patronload_bean {
         
         return retValue.toString();
     }
+
+    /**
+     * Method to get CSV file names in HTML
+     * @return String - the list of MARC files in HTML
+     */
+    public String getCsvFileNames() {
+        
+        try {
+            FileUtils.confirmDir(marcFilesDir);
+        } catch (IOException ioe) {
+            //just ignore it for now....
+        }
+        
+        
+        String marcFileUrl = contextUrl.substring(0, contextUrl.length()-4) + "getcsvfile";
+        
+        File myF = new File( marcFilesDir);
+        String[] myFiles = myF.list();
+        
+        StringBuffer retValue = new StringBuffer("");
+        
+        // format time like: July 04 10:48:39 PDT 2002
+        Format formatter;
+        formatter = new SimpleDateFormat("MMM dd kk:mm:ss yyyy");
+        
+        for (int i=0; i < myFiles.length; i++) {
+            File testF = new File(marcFilesDir + myFiles[i]);
+            
+            if ((testF.isFile()) && (testF.getName().endsWith(".csv")) ) {
+                retValue.append("<tr>");
+                
+                java.util.Date date = new java.util.Date(testF.lastModified());
+                String dateString = formatter.format(date);
+                
+                retValue.append("<td>" + "<a href=\"" + marcFileUrl + "?file=" + myFiles[i] + "\"> " + myFiles[i] + "</a></td>");
+                retValue.append("<td>" + dateString + "</td>");
+                retValue.append("<td>" + (testF.length() / 1024) + "k</td>");
+                retValue.append("<td> <input type=\"checkbox\" name=\"remove_" + myFiles[i] + "\"> </td>");
+                retValue.append("</tr>");
+            }
+        }
+        
+        return retValue.toString();
+    }
     
     /**
      * @return  */
@@ -807,6 +851,18 @@ public class patronload_bean {
 		//tmp[1] = propsDir;
 		tmp[1] = marcFilesDir;
 		edu.ucsd.library.patronload.apps.doinc_employee.main(tmp);
+	}
+
+	/**
+	 * Method to do an incremental database query for employees
+	 */
+	public void doAllEmployee() {
+		String[] tmp = new String[2];
+		
+		String propsDir = pathToProperties.substring(0, pathToProperties.lastIndexOf(File.separator)+1);
+		tmp[0] = marcFilesDir;
+		tmp[1] = marcFilesDir;
+		edu.ucsd.library.patronload.apps.create_employee_file.main(tmp);
 	}
 	
 	/**
