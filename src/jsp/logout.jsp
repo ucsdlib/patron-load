@@ -2,5 +2,5 @@
 
 <%
 	session.invalidate();
-	response.sendRedirect("../index.jsp");
+	response.sendRedirect("/patronload/login/login.jsp");
 %>

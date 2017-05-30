@@ -43,7 +43,7 @@ UCSD Libraries Student Database Download Software
 	<tr>
 	<td bgcolor="#6600FF" width="900" height="30" align="center">
 	<font face="Verdana, Arial, sans-serif" size=2 class="fontNormal" color="#FFFFFF">
-	<b>You are logged on as: <font color="#FF9933"><%=session.getAttribute("username") %></font></b>
+	&nbsp;
 	
 	</font>
 	</td>

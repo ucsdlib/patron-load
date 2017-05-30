@@ -3,13 +3,6 @@
 
 <jsp:useBean id="patronLoad" class="edu.ucsd.library.patronload.beans.patronload_bean" scope="session"/>
 
-<%
-	if (!patronLoad.canAccessFullFiles()) {
-		session.setAttribute("message", "access to the full database files");
-		%> <jsp:forward page="not_permitted.jsp"/> <%
-	} else {
-%>
-
 <html>
 
 <body background="../images/background.gif" text="#FFFFFF" VLINK="#FFFFFF" ALINK="#FFFFFF" LINK="#FFFFFF">
@@ -71,7 +64,3 @@
 
 </body>
 </html>
-
-<%
-	}  // close else
-%>

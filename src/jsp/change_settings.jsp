@@ -3,15 +3,6 @@
 
 <jsp:useBean id="patronLoad" class="edu.ucsd.library.patronload.beans.patronload_bean" scope="session"/>
 
-
-<%
-	if (!patronLoad.canChangeSettings()) {
-		session.setAttribute("message", "to change settings");
-		%> <jsp:forward page="not_permitted.jsp"/> <%
-} else {
-%>
-
-
 <html>
 	
 	<body background="../images/background.gif">
@@ -290,7 +281,3 @@
 		
 	</body>
 </html>
-
-<%
-	}  // close else
-%>

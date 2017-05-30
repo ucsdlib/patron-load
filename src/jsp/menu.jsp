@@ -114,24 +114,6 @@ function logout() {
 </tr>
 
 <tr>
-<td bgcolor='#6092C3' onClick="parent.frames['workarea'].location='change_password.jsp'" onMouseOver="this.style.backgroundColor='#6161C2'; this.style.color='white'; this.style.cursor='hand';" onMouseOut="this.style.backgroundColor='#6092C3'; this.style.color='black'">
-<font face="Verdana, Arial, sans-serif" size=2 class="fontNormal">
-<img src="../images/downarrow.gif">
-<b><a href="change_password.jsp" target="workarea">Change Password</a></b>
-</font>
-</td>
-</tr>
-
-<tr>
-<td bgcolor='#6092C3' onClick="parent.frames['workarea'].location='add_users.jsp'" onMouseOver="this.style.backgroundColor='#6161C2'; this.style.color='white'; this.style.cursor='hand';" onMouseOut="this.style.backgroundColor='#6092C3'; this.style.color='black'">
-<font face="Verdana, Arial, sans-serif" size=2 class="fontNormal">
-<img src="../images/downarrow.gif">
-<b><a href="add_users.jsp" target="workarea">Authorized Users</a></b>
-</font>
-</td>
-</tr>
-
-<tr>
 <td>
 &nbsp;
 </td>

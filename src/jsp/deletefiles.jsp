@@ -4,11 +4,6 @@
 <jsp:useBean id="patronLoad" class="edu.ucsd.library.patronload.beans.patronload_bean" scope="session"/>
 
 <%
-	if (!patronLoad.canAccessFullFiles()) {
-		session.setAttribute("message", "to access employees files");
-		%> <jsp:forward page="not_permitted.jsp"/> <%
-	} else {
-
 		String webinfDir = patronLoad.getContextDir() + "WEB-INF" + File.separator;
 		InitialContext jndi = new InitialContext();
 				
@@ -26,5 +21,4 @@
 
 		%> <jsp:forward page="download_employees.jsp"/> <%
 	
-	}  // close else
 %>

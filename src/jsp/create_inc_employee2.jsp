@@ -3,12 +3,6 @@
 
 <jsp:useBean id="patronLoad" class="edu.ucsd.library.patronload.beans.patronload_bean" scope="session"/>
 
-<%
-	if (!patronLoad.canCreateFullFile()) {
-		session.setAttribute("message", "to create a full file");
-		%> <jsp:forward page="not_permitted.jsp"/> <%
-	} else {
-%>
 
 <html>
 
@@ -29,7 +23,3 @@
 
 </body>
 </html>
-
-<%
-	}  // close else
-%>
