@@ -3,13 +3,6 @@
 
 <jsp:useBean id="patronLoad" class="edu.ucsd.library.patronload.beans.patronload_bean" scope="session"/>
 
-<%
-	if (!patronLoad.canAuthorizeUsers()) {
-		session.setAttribute("message", "to create all employee file");
-		%> <jsp:forward page="not_permitted.jsp"/> <%
-	} else {
-%>
-
 <html>
 
 <body background="../images/background.gif" text="#FFFFFF" VLINK="#FFFFFF" ALINK="#FFFFFF" LINK="#FFFFFF">
@@ -29,7 +22,3 @@
 
 </body>
 </html>
-
-<%
-	}  // close else
-%>

@@ -4,11 +4,6 @@
 <jsp:useBean id="patronLoad" class="edu.ucsd.library.patronload.beans.patronload_bean" scope="session"/>
 
 <%
-	if (!patronLoad.canAccessFullFiles()) {
-		session.setAttribute("message", "to create a full file");
-		%> <jsp:forward page="not_permitted.jsp"/> <%
-	} else {
-
 		String webinfDir = patronLoad.getContextDir() + "WEB-INF" + File.separator;
 		//String marcFilesDir =  webinfDir + File.separator + "marc_files" + File.separator;
 		InitialContext jndi = new InitialContext();
@@ -37,7 +32,4 @@
 			    if (value.equals("on")) myF.delete();
 		}
 
-		%> <jsp:forward page="full_database_files.jsp"/> <%
-	
-	}  // close else
-%>
+		%> <jsp:forward page="full_database_files.jsp"/>

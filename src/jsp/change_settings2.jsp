@@ -4,12 +4,7 @@
 <jsp:useBean id="patronLoad" class="edu.ucsd.library.patronload.beans.patronload_bean" scope="session"/>
 
 <%
-	if (!patronLoad.canChangeSettings()) {
-		session.setAttribute("message", "to change settings");
-		%> <jsp:forward page="not_permitted.jsp"/> <%
-	} else {
-
-		String quartercode = request.getParameter("quartercode");
+	String quartercode = request.getParameter("quartercode");
 		
     //String expiration1  = request.getParameter("expiration1");
                 
@@ -25,8 +20,6 @@
 		patronLoad.updateSettings(quartercode, expiration1, expiration2, 
 			employee1_exp, employee2_exp);
 		
-		%> <jsp:forward page="change_settings.jsp"/> <%
-	}
-%>
+		%> <jsp:forward page="change_settings.jsp"/>
 
 

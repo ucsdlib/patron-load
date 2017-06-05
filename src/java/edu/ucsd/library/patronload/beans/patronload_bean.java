@@ -735,7 +735,7 @@ public class patronload_bean {
      * @param usr  */
     public void setCurrentUser(String usr) {
         currentUser = usr;
-        loadUserPermissions(usr);
+        //loadUserPermissions(usr);
         getSettings();
     }
     

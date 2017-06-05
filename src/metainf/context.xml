@@ -1,3 +1,7 @@
 <Context path="/patronload" docBase="patronload" debug="5" reloadable="true">
+  <Realm className="edu.ucsd.library.security.LibraryRealmAD" debug="99"
+        connectionURL="ldap://ldap.ad.ucsd.edu" userPrefix="CN="
+        userSuffix=",OU=Users,OU=University Library,DC=AD,DC=UCSD,DC=EDU"
+        roleAttrib="memberOf"/>
   <ResourceLink name="clusterSharedPath" global="clusterSharedPath" type="java.lang.String"/>
 </Context>
