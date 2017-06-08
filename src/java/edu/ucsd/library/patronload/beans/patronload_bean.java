@@ -616,7 +616,8 @@ public class patronload_bean {
         }
         
         
-        String marcFileUrl = contextUrl.substring(0, contextUrl.length()-4) + "getmarcfile";
+        //String marcFileUrl = contextUrl.substring(0, contextUrl.length()-4) + "getmarcfile";
+        String marcFileUrl = contextUrl + "getmarcfile";
         
         File myF = new File( marcFilesDir);
         String[] myFiles = myF.list();
@@ -661,7 +662,8 @@ public class patronload_bean {
         }
         
         
-        String marcFileUrl = contextUrl.substring(0, contextUrl.length()-4) + "getcsvfile";
+        //String marcFileUrl = contextUrl.substring(0, contextUrl.length()-4) + "getcsvfile";
+        String marcFileUrl = contextUrl + "getcsvfile";
         
         File myF = new File( marcFilesDir);
         String[] myFiles = myF.list();
