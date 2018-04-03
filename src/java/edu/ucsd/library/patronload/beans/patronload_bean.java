@@ -150,7 +150,16 @@ public class patronload_bean {
 		if (in.equals("SP16")) quarterCodeLetter = "u";
 		if (in.equals("SU16")) quarterCodeLetter = "v";
 		if (in.equals("FA16")) quarterCodeLetter = "w";
-		
+		if (in.equals("SU18")) quarterCodeLetter = "d";
+		if (in.equals("FA18")) quarterCodeLetter = "e";
+		if (in.equals("WI19")) quarterCodeLetter = "f";
+		if (in.equals("SP19")) quarterCodeLetter = "g";
+		if (in.equals("SU19")) quarterCodeLetter = "h";
+		if (in.equals("FA19")) quarterCodeLetter = "i";
+		if (in.equals("WI20")) quarterCodeLetter = "j";
+		if (in.equals("SP20")) quarterCodeLetter = "k";
+		if (in.equals("SU20")) quarterCodeLetter = "l";	
+
 		return 	quarterCodeLetter;
 	}
     
