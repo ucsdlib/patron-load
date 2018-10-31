@@ -879,7 +879,7 @@ public class fullquery_employee {
 					//+ " ON p.emb_employee_id = v.employee_id, "
 					+ " employee.p_appointment p1, "  
 					+ " employee.p_distribution p2 "
-					+ " WHERE " 
+					+ " WHERE p1.app_department_name != ' ' AND " 
 					+ " ("
 					+ "((p.emp_student_status_code IN (" + EMP_STUDENT_STATUS_CODE + ")) OR "
                     + "((p.emp_student_status_code = '4') AND (p1.app_title_code IN (" + NEW_STUDENT_STAFF_TITLE_CODES + ")) )) "
