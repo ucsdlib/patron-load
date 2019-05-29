@@ -14,9 +14,12 @@ package edu.ucsd.library.patronload.apps;
  */
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -26,6 +29,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Properties;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.JSONArray;
 
 import edu.ucsd.library.util.FileUtils;
 
@@ -69,9 +76,9 @@ public class fullquery {
         try {
             pw = new PrintWriter(new BufferedOutputStream(new FileOutputStream(
                     fileToWrite)));
-
-            getRawData(pathToProperties, pw);
-            getGradStudentData(pathToProperties, pw);
+            getToken(pathToProperties);
+            //getRawData(pathToProperties, pw);
+            //getGradStudentData(pathToProperties, pw);
 
             if (pw != null)
                 pw.close();
@@ -84,6 +91,35 @@ public class fullquery {
             } catch (Exception e1) {
             }
         }
+    }
+
+    public static void getToken(String pathToProperties) {
+        Process process = null;
+        PrintWriter printWriter = null;
+        try {
+            process = Runtime.getRuntime().exec(pathToProperties+"getAccessToken.sh");
+            InputStream inputStream = process.getInputStream();
+            printWriter = new PrintWriter(new BufferedOutputStream(new FileOutputStream(
+                pathToProperties+"access_token.txt")));
+            printWriter.print(convert(inputStream));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                process.destroy();
+                printWriter.close();
+            } catch (Exception e) {}
+        }
+    }
+
+    public static String convert(InputStream inputStream) throws IOException{
+      ByteArrayOutputStream result = new ByteArrayOutputStream();
+      byte[] buffer = new byte[1024];
+      int length;
+      while ((length = inputStream.read(buffer)) != -1) {
+          result.write(buffer, 0, length);
+      }
+      return result.toString("UTF-8");
     }
 
     /**
