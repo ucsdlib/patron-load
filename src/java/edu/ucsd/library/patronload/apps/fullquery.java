@@ -76,7 +76,8 @@ public class fullquery {
         try {
             pw = new PrintWriter(new BufferedOutputStream(new FileOutputStream(
                     fileToWrite)));
-            getToken(pathToProperties);
+            //work getToken(pathToProperties);
+            getPreferredName(pathToProperties);
             //getRawData(pathToProperties, pw);
             //getGradStudentData(pathToProperties, pw);
 
@@ -93,6 +94,25 @@ public class fullquery {
         }
     }
 
+    public static void getPreferredName(String pathToProperties) {
+      PrintWriter printWriter = null;
+      try {
+          FileReader reader = new FileReader(pathToProperties+"access_token.txt");
+          JSONParser jsonParser = new JSONParser();
+          JSONObject jsonObject = (JSONObject)jsonParser.parse(reader);
+          
+          printWriter = new PrintWriter(new BufferedOutputStream(new FileOutputStream(
+              pathToProperties+"students_preferred_name.txt")));
+          printWriter.print(jsonObject.get("access_token"));
+      } catch (Exception e) {
+          e.printStackTrace();
+      } finally {
+          try {
+              printWriter.close();
+          } catch (Exception e) {}
+      }
+    }
+  
     public static void getToken(String pathToProperties) {
         Process process = null;
         PrintWriter printWriter = null;
