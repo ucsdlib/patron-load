@@ -452,7 +452,7 @@ public class makemarc {
                studentId = obj.get("studentId").toString().trim();
                lastName = obj.get("lastName").toString().trim();
                firstName = obj.get("firstName").toString().trim();
-               preferredNameMap.put(studentId, lastName + ", " +firstName);
+               preferredNameMap.put(studentId.toLowerCase(), lastName + ", " +firstName);
             }
         } catch (Exception e) {
           e.printStackTrace();            
