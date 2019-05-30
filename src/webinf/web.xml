@@ -46,19 +46,19 @@
   <servlet>
    <servlet-name>scheduler</servlet-name>
     <servlet-class>edu.ucsd.library.patronload.apps.scheduler</servlet-class>
-    <load-on-startup>1</load-on-startup>
+    <load-on-startup>0</load-on-startup>
    </servlet>
 
   <servlet>
    <servlet-name>schedulerEmp</servlet-name>
     <servlet-class>edu.ucsd.library.patronload.apps.schedulerEmp</servlet-class>
-    <load-on-startup>1</load-on-startup>
+    <load-on-startup>0</load-on-startup>
    </servlet>
 
   <servlet>
    <servlet-name>schedulerCsv</servlet-name>
     <servlet-class>edu.ucsd.library.patronload.apps.schedulerCsv</servlet-class>
-    <load-on-startup>1</load-on-startup>
+    <load-on-startup>0</load-on-startup>
    </servlet>
       
   <servlet-mapping>
