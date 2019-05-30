@@ -11,14 +11,18 @@ package edu.ucsd.library.patronload.apps;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -26,6 +30,15 @@ import java.util.Vector;
 import edu.ucsd.library.patronload.beans.patronload_bean;
 import edu.ucsd.library.util.FileUtils;
 import edu.ucsd.library.util.TextUtils;
+
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.JSONArray;
+
+import edu.ucsd.library.shared.Http;
+
+import org.apache.commons.httpclient.methods.GetMethod;
 
 /**
  *
@@ -77,10 +90,15 @@ public class makemarc {
 			String email = "";
 			String barcode = "";
 			String systemId = "";
+			String preferredName = "";
+			String pronoun = "";
+			
 			debugData = new StringBuffer();
-
-			// keep going while there are still lines
-
+			//getToken(pathToProperties);
+            //createPreferredNameFile(pathToProperties);
+			
+			Map prefNameMap = loadPreferredName(pathToProperties);
+            // keep going while there are still lines
 			while (((lineIn = in.readLine()) != null)
 				&& !(lineIn.trim().equals(""))) {
 				lineIn = lineIn.trim();
@@ -112,6 +130,12 @@ public class makemarc {
 					name = "";
 				}
 
+	            if(prefNameMap.containsKey(id)) {
+	                preferredName = prefNameMap.get(id).toString();
+	            } else {
+	                preferredName = name;
+	            }
+				
 				if (st.hasMoreTokens()) {
 					ssn = st.nextToken().trim();
 				} else {
@@ -226,7 +250,9 @@ public class makemarc {
 				makeFieldEntry("081", quarterCodeLetter);				
 				makeFieldEntry("083", deptnum);
 				makeFieldEntry("084", level);
-				makeFieldEntry("100", name);
+				makeFieldEntry("100", preferredName);
+				makeFieldEntry("120", name);
+				makeFieldEntry("520", pronoun);
 				makeFieldEntry("220", cm);
 				makeFieldEntry("225", ct);
 				makeFieldEntry("230", pm);
@@ -411,6 +437,83 @@ public class makemarc {
 
 		return prop;
 	}
+
+    public static Map loadPreferredName(String filePath) {
+        Map preferredNameMap = null;
+        try {
+            FileReader reader = new FileReader(filePath+"students_preferred_name.txt");
+            JSONParser jsonParser = new JSONParser();
+            JSONArray arr = (JSONArray)jsonParser.parse(reader);
+            JSONObject obj = null;
+            preferredNameMap = new HashMap();
+            String studentId = "", lastName = "", firstName = "";
+            for(int i=0; i<arr.size(); i++){
+                obj = (JSONObject)arr.get(i);
+               studentId = obj.get("studentId").toString().trim();
+               lastName = obj.get("lastName").toString().trim();
+               firstName = obj.get("firstName").toString().trim();
+               preferredNameMap.put(studentId, lastName + ", " +firstName);
+            }
+        } catch (Exception e) {
+          e.printStackTrace();            
+        }
+        return preferredNameMap;
+    }
+    
+    public static void createPreferredNameFile(String filePath) {
+        PrintWriter printWriter = null;
+        try {
+            GetMethod rdfGet = null;
+            String body = null;
+            FileReader reader = new FileReader(filePath+"access_token.txt");
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObject = (JSONObject)jsonParser.parse(reader);
+            String token = jsonObject.get("access_token").toString();
+            rdfGet = new GetMethod("https://api.ucsd.edu:8243/display_name_info/v1/students/preferred_names");          
+            rdfGet.setRequestHeader("Accept", "application/json");
+            rdfGet.setRequestHeader("Authorization", "Bearer "+token);
+            body = Http.execute( rdfGet );
+            if(body != null) {
+                printWriter = new PrintWriter(new BufferedOutputStream(new FileOutputStream(filePath+"students_preferred_name.txt")));            
+                printWriter.print(body);
+            }          
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                printWriter.close();
+            } catch (Exception e) {}
+        }
+    }
+
+    public static void getToken(String pathToProperties) {
+        Process process = null;
+        PrintWriter printWriter = null;
+        try {
+            process = Runtime.getRuntime().exec(pathToProperties+"getAccessToken.sh");
+            InputStream inputStream = process.getInputStream();
+            printWriter = new PrintWriter(new BufferedOutputStream(new FileOutputStream(
+                pathToProperties+"access_token.txt")));
+            printWriter.print(convert(inputStream));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                process.destroy();
+                printWriter.close();
+            } catch (Exception e) {}
+        }
+    }
+
+    public static String convert(InputStream inputStream) throws IOException{
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = inputStream.read(buffer)) != -1) {
+            result.write(buffer, 0, length);
+        }
+        return result.toString("UTF-8");
+    }
 
 	/**
 	* @param args the command line arguments

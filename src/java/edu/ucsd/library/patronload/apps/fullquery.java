@@ -14,12 +14,10 @@ package edu.ucsd.library.patronload.apps;
  */
 
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -30,14 +28,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Properties;
 
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.JSONArray;
-
-import edu.ucsd.library.shared.Http;
 import edu.ucsd.library.util.FileUtils;
-import org.apache.commons.httpclient.methods.GetMethod;
 
 public class fullquery {
 
@@ -79,10 +70,10 @@ public class fullquery {
         try {
             pw = new PrintWriter(new BufferedOutputStream(new FileOutputStream(
                     fileToWrite)));
-            getToken(pathToProperties);
-            getPreferredName(pathToProperties);
-            //getRawData(pathToProperties, pw);
-            //getGradStudentData(pathToProperties, pw);
+            //getToken(pathToProperties);
+            //getPreferredName(pathToProperties);
+            getRawData(pathToProperties, pw);
+            getGradStudentData(pathToProperties, pw);
 
             if (pw != null)
                 pw.close();
@@ -96,31 +87,31 @@ public class fullquery {
             }
         }
     }
-
+/*
     public static void getPreferredName(String filePath) {
-      PrintWriter printWriter = null;
-      try {
-          GetMethod rdfGet = null;
-          String body = null;
-          FileReader reader = new FileReader(filePath+"access_token.txt");
-          JSONParser jsonParser = new JSONParser();
-          JSONObject jsonObject = (JSONObject)jsonParser.parse(reader);
-          String token = jsonObject.get("access_token").toString();
-          rdfGet = new GetMethod("https://api.ucsd.edu:8243/display_name_info/v1/students/preferred_names");          
-          rdfGet.setRequestHeader("Accept", "application/json");
-          rdfGet.setRequestHeader("Authorization", "Bearer "+token);
-          body = Http.execute( rdfGet );
-          if(body != null) {
-              printWriter = new PrintWriter(new BufferedOutputStream(new FileOutputStream(filePath+"students_preferred_name.txt")));            
-              printWriter.print(body);
-          }          
-      } catch (Exception e) {
-          e.printStackTrace();
-      } finally {
-          try {
-              printWriter.close();
-          } catch (Exception e) {}
-      }
+        PrintWriter printWriter = null;
+        try {
+            GetMethod rdfGet = null;
+            String body = null;
+            FileReader reader = new FileReader(filePath+"access_token.txt");
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObject = (JSONObject)jsonParser.parse(reader);
+            String token = jsonObject.get("access_token").toString();
+            rdfGet = new GetMethod("https://api.ucsd.edu:8243/display_name_info/v1/students/preferred_names");          
+            rdfGet.setRequestHeader("Accept", "application/json");
+            rdfGet.setRequestHeader("Authorization", "Bearer "+token);
+            body = Http.execute( rdfGet );
+            if(body != null) {
+                printWriter = new PrintWriter(new BufferedOutputStream(new FileOutputStream(filePath+"students_preferred_name.txt")));            
+                printWriter.print(body);
+            }          
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                printWriter.close();
+            } catch (Exception e) {}
+        }
     }
   
     public static void getToken(String pathToProperties) {
@@ -151,7 +142,7 @@ public class fullquery {
       }
       return result.toString("UTF-8");
     }
-
+*/
     /**
      * Method to retreive data from database and output to raw file.
      * 
@@ -266,38 +257,6 @@ public class fullquery {
             				"affiliates_dw.rosetta_stone_barcode_v I ON S.stu_pid = I.stu_pid " +
             				"LEFT JOIN affiliates_dw.affiliates_safe_attributes SA ON S.stu_pid = SA.pid " +
             				"LEFT JOIN affiliates_dw.system SI ON SA.aid = SI.aid and SI.system_id = 41 order by S.stu_pid, A.adr_start_date, A.adr_end_date";
-
-           /*
-            String query = "select S.stu_pid, S.stu_name,'' as ssn, " +
-            		"T.stt_registration_status_code, '"+ term +"' as last_enrolled, " +
-            		"substr(T.stt_academic_level,1,1) as academic_level, T.maj_major_code, " +
-            		"A.adr_address_type, rtrim(substr(char(year(A.adr_start_date)),3,4)) " +
-            		"concat rtrim(ltrim(char(month(A.adr_start_date)))) concat " +
-            		"rtrim(ltrim(char(day(A.adr_start_date)))) as startdate, " +
-            		"rtrim(substr(char(year(A.adr_end_date)),3,4)) concat " +
-            		"rtrim(ltrim(char(month(A.adr_end_date)))) concat " +
-            		"rtrim(ltrim(char(day(A.adr_end_date)))) as stopdate, " +
-            		"A.adr_address_line_1, A.adr_address_line_2, A.adr_address_line_3, " +
-            		"A.adr_address_line_4, A.adr_city, substr(A.adr_phone,1,3) " +
-            		"as area_code, substr(A.adr_phone,5,3) as exchange, " +
-            		"substr(A.adr_phone,9,4) as sqid, char(' ',4) as extension, " +
-            		"A.adr_state, A.adr_zip, A.co_country_code, E.em_address_line, " +
-            		"I.student_barcode, E.em_address_type, SI.id from student_db.s_student_term T, " +
-            		"student_db.s_address A, " +
-            		"(student_db.s_student S LEFT OUTER JOIN student_db.s_email E ON " +
-            		"S.stu_pid = E.stu_pid) LEFT OUTER JOIN affiliates_dw.rosetta_stone_barcode_v I " +
-            		"ON S.stu_pid = I.stu_pid "+
-            		"LEFT JOIN affiliates_dw.affiliates_safe_attributes SA ON S.stu_pid = SA.pid " +
-            		"LEFT JOIN affiliates_dw.system SI ON SA.aid = SI.aid and SI.system_id = 41 " +
-            		"where (S.stu_pid = T.stu_pid) and " +
-            		trm_term_code + " T.stt_major_primary_flag = 'Y' and " +
-            		"T.stu_pid = A.stu_pid and (adr_address_type = 'CM' or " +
-            		"adr_address_type = 'PM') and stt_registration_status_code in " +
-            		"('EN', 'RG') and T.stt_academic_level in ('UN') and (E.em_address_type = 'EMC' or E.em_address_type = 'EMH' or E.em_address_type is null)and " +
-            		//"E.em_address_line like '%ucsd.edu%' and " +
-            		"(E.em_end_date is null or E.em_end_date !< current date) " +
-            		"order by S.stu_pid, A.adr_start_date, A.adr_end_date ";
-            */
             
             try {
                 //String dir = pathToProperties + "marc_files" + File.separator;
