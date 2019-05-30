@@ -30,11 +30,14 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.JSONArray;
 
+import edu.ucsd.library.shared.Http;
 import edu.ucsd.library.util.FileUtils;
+import org.apache.commons.httpclient.methods.GetMethod;
 
 public class fullquery {
 
@@ -76,7 +79,7 @@ public class fullquery {
         try {
             pw = new PrintWriter(new BufferedOutputStream(new FileOutputStream(
                     fileToWrite)));
-            //work getToken(pathToProperties);
+            getToken(pathToProperties);
             getPreferredName(pathToProperties);
             //getRawData(pathToProperties, pw);
             //getGradStudentData(pathToProperties, pw);
@@ -94,16 +97,23 @@ public class fullquery {
         }
     }
 
-    public static void getPreferredName(String pathToProperties) {
+    public static void getPreferredName(String filePath) {
       PrintWriter printWriter = null;
       try {
-          FileReader reader = new FileReader(pathToProperties+"access_token.txt");
+          GetMethod rdfGet = null;
+          String body = null;
+          FileReader reader = new FileReader(filePath+"access_token.txt");
           JSONParser jsonParser = new JSONParser();
           JSONObject jsonObject = (JSONObject)jsonParser.parse(reader);
-          
-          printWriter = new PrintWriter(new BufferedOutputStream(new FileOutputStream(
-              pathToProperties+"students_preferred_name.txt")));
-          printWriter.print(jsonObject.get("access_token"));
+          String token = jsonObject.get("access_token").toString();
+          rdfGet = new GetMethod("https://api.ucsd.edu:8243/display_name_info/v1/students/preferred_names");          
+          rdfGet.setRequestHeader("Accept", "application/json");
+          rdfGet.setRequestHeader("Authorization", "Bearer "+token);
+          body = Http.execute( rdfGet );
+          if(body != null) {
+              printWriter = new PrintWriter(new BufferedOutputStream(new FileOutputStream(filePath+"students_preferred_name.txt")));            
+              printWriter.print(body);
+          }          
       } catch (Exception e) {
           e.printStackTrace();
       } finally {
