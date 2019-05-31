@@ -134,7 +134,7 @@ public class makemarc {
 	                preferredName = name;
 	            }
 				
-	            pronoun = getStudentPronoun(id, pathToProperties);
+	            //pronoun = getStudentPronoun(id, pathToProperties);
 	            
 				if (st.hasMoreTokens()) {
 					ssn = st.nextToken().trim();
@@ -465,6 +465,7 @@ public class makemarc {
         PrintWriter printWriter = null;
         try {
             String token = getToken(filePath);
+            System.out.println("patronload token : "+token);
             GetMethod rdfGet = null;
             String body = null;
             rdfGet = new GetMethod("https://api.ucsd.edu:8243/display_name_info/v1/students/preferred_names");          
@@ -542,7 +543,8 @@ public class makemarc {
             FileReader reader = new FileReader(file);
             JSONParser jsonParser = new JSONParser();
             JSONObject jsonObject = (JSONObject)jsonParser.parse(reader);
-            data = jsonObject.get(fieldName).toString();                
+            data = jsonObject.get(fieldName).toString();
+            System.out.println("fieldName:"+fieldName+"-"+data);
         } catch (Exception e) {
             e.printStackTrace();            
         }
