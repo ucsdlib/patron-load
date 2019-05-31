@@ -94,8 +94,6 @@ public class makemarc {
 			String pronoun = "";
 			
 			debugData = new StringBuffer();
-			//getToken(pathToProperties);
-            //createPreferredNameFile(pathToProperties);
 			
 			Map prefNameMap = loadPreferredName(pathToProperties);
             // keep going while there are still lines
@@ -136,6 +134,8 @@ public class makemarc {
 	                preferredName = name;
 	            }
 				
+	            pronoun = getStudentPronoun(id, pathToProperties);
+	            
 				if (st.hasMoreTokens()) {
 					ssn = st.nextToken().trim();
 				} else {
@@ -441,6 +441,7 @@ public class makemarc {
     public static Map loadPreferredName(String filePath) {
         Map preferredNameMap = null;
         try {
+            createPreferredNameFile(filePath);
             FileReader reader = new FileReader(filePath+"students_preferred_name.txt");
             JSONParser jsonParser = new JSONParser();
             JSONArray arr = (JSONArray)jsonParser.parse(reader);
@@ -463,12 +464,9 @@ public class makemarc {
     public static void createPreferredNameFile(String filePath) {
         PrintWriter printWriter = null;
         try {
+            String token = getToken(filePath);
             GetMethod rdfGet = null;
             String body = null;
-            FileReader reader = new FileReader(filePath+"access_token.txt");
-            JSONParser jsonParser = new JSONParser();
-            JSONObject jsonObject = (JSONObject)jsonParser.parse(reader);
-            String token = jsonObject.get("access_token").toString();
             rdfGet = new GetMethod("https://api.ucsd.edu:8243/display_name_info/v1/students/preferred_names");          
             rdfGet.setRequestHeader("Accept", "application/json");
             rdfGet.setRequestHeader("Authorization", "Bearer "+token);
@@ -486,15 +484,22 @@ public class makemarc {
         }
     }
 
-    public static void getToken(String pathToProperties) {
+    public static String getToken(String filePath) {
         Process process = null;
         PrintWriter printWriter = null;
+        String token = null, fileName = "access_token.txt";
         try {
-            process = Runtime.getRuntime().exec(pathToProperties+"getAccessToken.sh");
+            process = Runtime.getRuntime().exec(filePath + "getAccessToken.sh");
             InputStream inputStream = process.getInputStream();
             printWriter = new PrintWriter(new BufferedOutputStream(new FileOutputStream(
-                pathToProperties+"access_token.txt")));
+                filePath + fileName)));
             printWriter.print(convert(inputStream));
+            token = getJsonData(filePath + fileName, "access_token");
+            /*
+            FileReader reader = new FileReader(pathToProperties + fileName);
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObject = (JSONObject)jsonParser.parse(reader);
+            token = jsonObject.get("access_token").toString();*/
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -503,8 +508,47 @@ public class makemarc {
                 printWriter.close();
             } catch (Exception e) {}
         }
+        return token;
     }
 
+    public static String getStudentPronoun(String studentId, String filePath) {
+        String body = null, pronoun = "", fileName = "student_pronoun.txt";
+        PrintWriter printWriter = null;
+        try {
+            String token = getToken(filePath);
+            GetMethod rdfGet = null;
+            rdfGet = new GetMethod("https://api.ucsd.edu:8243/display_name_info/v1/students/personal_pronouns_by_pids?ids="+studentId.toUpperCase());           
+            rdfGet.setRequestHeader("Accept", "application/json");
+            rdfGet.setRequestHeader("Authorization", "Bearer " + token);
+             
+            if(body != null) {
+                printWriter = new PrintWriter(new BufferedOutputStream(new FileOutputStream(filePath + fileName)));            
+                printWriter.print(body);
+                pronoun = getJsonData(filePath + fileName, "pronoun");           
+            }
+        } catch (Exception e) {
+            e.printStackTrace();            
+        } finally {
+            try {
+                printWriter.close();
+            } catch (Exception e) {}
+        }
+        return pronoun;
+    }
+
+    public static String getJsonData(String file, String fieldName) {
+        String data = null;
+        try {
+            FileReader reader = new FileReader(file);
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObject = (JSONObject)jsonParser.parse(reader);
+            data = jsonObject.get(fieldName).toString();                
+        } catch (Exception e) {
+            e.printStackTrace();            
+        }
+        return data;
+    }
+    
     public static String convert(InputStream inputStream) throws IOException{
         ByteArrayOutputStream result = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
