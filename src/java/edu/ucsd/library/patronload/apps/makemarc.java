@@ -92,10 +92,11 @@ public class makemarc {
 			String systemId = "";
 			String preferredName = "";
 			String pronoun = "";
+			String token = getToken(pathToProperties);
 			
 			debugData = new StringBuffer();
 			
-			Map prefNameMap = loadPreferredName(pathToProperties);
+			Map prefNameMap = loadPreferredName(pathToProperties, token);
             // keep going while there are still lines
 			while (((lineIn = in.readLine()) != null)
 				&& !(lineIn.trim().equals(""))) {
@@ -134,7 +135,7 @@ public class makemarc {
 	                preferredName = name;
 	            }
 				
-	            pronoun = getStudentPronoun(id, pathToProperties);
+	            pronoun = getStudentPronoun(id, pathToProperties, token);
 	            
 				if (st.hasMoreTokens()) {
 					ssn = st.nextToken().trim();
@@ -438,10 +439,10 @@ public class makemarc {
 		return prop;
 	}
 
-    public static Map loadPreferredName(String filePath) {
+    public static Map loadPreferredName(String filePath, String token) {
         Map preferredNameMap = null;
         try {
-            createPreferredNameFile(filePath);
+            createPreferredNameFile(filePath, token);
             FileReader reader = new FileReader(filePath+"students_preferred_name.txt");
             JSONParser jsonParser = new JSONParser();
             JSONArray arr = (JSONArray)jsonParser.parse(reader);
@@ -461,10 +462,10 @@ public class makemarc {
         return preferredNameMap;
     }
     
-    public static void createPreferredNameFile(String filePath) {
+    public static void createPreferredNameFile(String filePath, String token) {
         PrintWriter printWriter = null;
         try {
-            String token = getToken(filePath);
+            //String token = getToken(filePath);
             GetMethod rdfGet = null;
             String body = null;
             rdfGet = new GetMethod("https://api.ucsd.edu:8243/display_name_info/v1/students/preferred_names");          
@@ -506,11 +507,11 @@ public class makemarc {
         return token;
     }
 
-    public static String getStudentPronoun(String studentId, String filePath) {
+    public static String getStudentPronoun(String studentId, String filePath, String token) {
         String body = null, pronoun = "", fileName = "student_pronoun.txt";
         PrintWriter printWriter = null;
         try {
-            String token = getToken(filePath);
+            //String token = getToken(filePath);
             GetMethod rdfGet = null;
             rdfGet = new GetMethod("https://api.ucsd.edu:8243/display_name_info/v1/students/personal_pronouns_by_pids?ids="+studentId.toUpperCase());           
             rdfGet.setRequestHeader("Accept", "application/json");
