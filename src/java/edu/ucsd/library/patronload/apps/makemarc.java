@@ -446,14 +446,19 @@ public class makemarc {
             JSONArray arr = (JSONArray)jsonParser.parse(reader);
             JSONObject obj = null;
             preferredNameMap = new HashMap();
-            String studentId = "", lastName = "", firstName = "";
+            String studentId = "", lastName = "", firstName = "", middleName = "";
             for(int i=0; i<arr.size(); i++){
                 obj = (JSONObject)arr.get(i);
                studentId = obj.get("studentId").toString().trim();
                lastName = obj.get("lastName").toString().trim();
                firstName = obj.get("firstName").toString().trim();
-               preferredNameMap.put(studentId.toLowerCase(), lastName + ", " +firstName);
-            }
+               middleName = obj.get("middleName").toString().trim();
+               if(middleName.length() > 0) {
+                   preferredNameMap.put(studentId.toLowerCase(), lastName + ", " + firstName + " "+middleName);       
+               } else {
+                   preferredNameMap.put(studentId.toLowerCase(), lastName + ", " +firstName);
+               } 
+           }
         } catch (Exception e) {
           e.printStackTrace();            
         }
