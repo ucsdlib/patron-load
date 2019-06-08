@@ -92,10 +92,12 @@ public class makemarc {
 			String barcode = "";
 			String systemId = "";
 			String preferredName = "";
+			String pronoun = "";
 			String token = getToken(pathToProperties);
 			debugData = new StringBuffer();
 			
 			Map prefNameMap = loadPreferredName(pathToProperties, token);
+			Map pronounMap = loadStudentPronoun(pathToProperties, token);
 
 			// keep going while there are still lines
 			while (((lineIn = in.readLine()) != null)
@@ -135,7 +137,13 @@ public class makemarc {
 	                preferredName = name;
 	                name = "";
 	            }
-				
+
+	            if(pronounMap.containsKey(id)) {
+                    pronoun = pronounMap.get(id).toString();
+                } else {
+                    pronoun = "";
+                }
+	            
 				if (st.hasMoreTokens()) {
 					ssn = st.nextToken().trim();
 				} else {
@@ -252,6 +260,7 @@ public class makemarc {
 				makeFieldEntry("084", level);
 				makeFieldEntry("100", preferredName); //primary name
 				makeFieldEntry("120", name);  //legal name
+				makeFieldEntry("520", pronoun);
 				makeFieldEntry("220", cm);
 				makeFieldEntry("225", ct);
 				makeFieldEntry("230", pm);
@@ -487,6 +496,100 @@ public class makemarc {
         }
     }
 
+    public static void createStudentIdsFile(String filePath, String token) {
+        PrintWriter printWriter = null;
+        try {
+            printWriter = new PrintWriter(new BufferedOutputStream(new FileOutputStream(filePath+"students_ids.txt")));            
+            printWriter.print(studentIds(filePath));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                printWriter.close();
+            } catch (Exception e) {}
+        }
+    }
+
+    public static void createPronounFile(String filePath, String token) {
+        PrintWriter printWriter = null;
+        BufferedReader in = null;
+        try {
+            GetMethod rdfGet = null;
+            String body = null, lineIn = null;
+            in = new BufferedReader(new FileReader(filePath+"students_ids.txt"));
+            printWriter = new PrintWriter(new BufferedOutputStream(new FileOutputStream(filePath+"students_pronoun.txt")));
+            printWriter.print("[");
+            while(((lineIn = in.readLine()) != null) && !(lineIn.trim().equals(""))) {                    
+                //rdfGet = new GetMethod("https://api.ucsd.edu:8243/display_name_info/v1/students/A15344381/personal_pronoun");
+                //rdfGet = new GetMethod("https://api.ucsd.edu:8243/display_name_info/v1/students/"+studentId.toUpperCase()+"/personal_pronoun");
+                rdfGet = new GetMethod("https://api.ucsd.edu:8243/display_name_info/v1/students/personal_pronouns_by_pids?ids="+lineIn);
+                rdfGet.setRequestHeader("Accept", "application/json");
+                rdfGet.setRequestHeader("Authorization", "Bearer "+token);
+                body = Http.execute( rdfGet );
+                if(body != null) {
+                    printWriter.print(","+body.substring(1,body.length()-2));
+                    //System.out.println("not null:"+body);
+                }
+            }
+            printWriter.print("]");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                printWriter.close();
+                in.close();
+            } catch (Exception e) {}
+        }
+    }
+
+    public static String studentIds(String filePath) throws Exception{
+        BufferedReader in = new BufferedReader(new FileReader(filePath+"full_merged_file.txt"));
+        String lineIn = null;
+        StringBuffer strBuffer = new StringBuffer();;      
+        int count = 0, min_range = 0, max_range = 400;
+        while(((lineIn = in.readLine()) != null) && !(lineIn.trim().equals(""))) {
+            if (count >= min_range && count < max_range) {
+                if(count > min_range) {
+                    strBuffer.append(",");
+                }
+                strBuffer.append(lineIn.substring(0, 9).toUpperCase());
+            }
+            if (count == max_range) {
+                min_range = min_range + 400;
+                max_range = min_range + 400;
+                strBuffer.append("\n");
+                strBuffer.append(lineIn.substring(0, 9).toUpperCase());
+            }
+            count++;
+        }       
+        in.close();
+        return strBuffer.toString();
+    }
+
+    public static Map loadStudentPronoun(String filePath, String token) {
+        Map pronounMap = new HashMap();
+        try {
+            createStudentIdsFile(filePath, token);
+            createPronounFile(filePath, token);
+            FileReader reader = new FileReader(filePath+"students_pronoun.txt");
+            JSONParser jsonParser = new JSONParser();
+            JSONArray arr = (JSONArray)jsonParser.parse(reader);
+            JSONObject obj = null;
+            String studentId = null, pronoun = null;
+            for(int i=0; i<arr.size(); i++){
+                obj = (JSONObject)arr.get(i);
+                if(obj != null) {
+                    studentId = obj.get("pid").toString().trim();
+                    pronoun = obj.get("personalPronoun").toString().trim();
+                    pronounMap.put(studentId.toLowerCase(), pronoun);
+                }
+            }
+        } catch (Exception e) {
+          e.printStackTrace();            
+        }
+        return pronounMap;
+    }
+    
     public static String getToken(String filePath) {
         Process process = null;
         PrintWriter printWriter = null;
