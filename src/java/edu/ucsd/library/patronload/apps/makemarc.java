@@ -520,15 +520,12 @@ public class makemarc {
             printWriter = new PrintWriter(new BufferedOutputStream(new FileOutputStream(filePath+"students_pronoun.txt")));
             printWriter.print("[");
             while(((lineIn = in.readLine()) != null) && !(lineIn.trim().equals(""))) {                    
-                //rdfGet = new GetMethod("https://api.ucsd.edu:8243/display_name_info/v1/students/A15344381/personal_pronoun");
-                //rdfGet = new GetMethod("https://api.ucsd.edu:8243/display_name_info/v1/students/"+studentId.toUpperCase()+"/personal_pronoun");
                 rdfGet = new GetMethod("https://api.ucsd.edu:8243/display_name_info/v1/students/personal_pronouns_by_pids?ids="+lineIn);
                 rdfGet.setRequestHeader("Accept", "application/json");
                 rdfGet.setRequestHeader("Authorization", "Bearer "+token);
                 body = Http.execute( rdfGet );
                 if(body != null) {
                     printWriter.print(","+body.substring(1,body.length()-2));
-                    //System.out.println("not null:"+body);
                 }
             }
             printWriter.print("]");
