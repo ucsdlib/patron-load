@@ -92,9 +92,9 @@ function getUrlVars() {
 </tr>
 <tr style="color:#FFFFFF">
 <form action="editProperties.jsp" method="get">
-<td><input type="text" name="propName" style="width:40"/></td>
+<td><input type="text" name="propName" style="width:40" autocomplete="off"/></td>
 <td> </td>
-<td><input type="text" name="newPropValue" style="width:60"/></td>
+<td><input type="text" name="newPropValue" style="width:60" autocomplete="off"/></td>
 <input type="hidden" name="target" value="<%=request.getParameter("target")%>"/>
 <input type="hidden" value="add" name="action">
 <td><input type="submit" value="Add"/></td>
@@ -114,7 +114,7 @@ while(it.hasNext())
 	<td><%=pairs.getKey()%></td>
 	<td><%=pairs.getValue()%></td>
 	<form action="editProperties.jsp" method="get">
-	<td><input type="text" name="newPropValue" style="width:60"/></td>
+	<td><input type="text" name="newPropValue" style="width:60" autocomplete="off"/></td>
 	<input type="hidden" name="propName" value="<%=pairs.getKey()%>" />
 	<input type="hidden" name="target" value="<%=request.getParameter("target")%>"/>
 	<input type="hidden" value="edit" name="action">
