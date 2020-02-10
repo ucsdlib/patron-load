@@ -21,6 +21,9 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.StringReader;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -452,22 +455,29 @@ public class makemarc {
             createPreferredNameFile(filePath, token);
             FileReader reader = new FileReader(filePath+"students_preferred_name.txt");
             JSONParser jsonParser = new JSONParser();
-            JSONArray arr = (JSONArray)jsonParser.parse(reader);
-            JSONObject obj = null;
+            //JSONArray arr = (JSONArray)jsonParser.parse(reader);
+            JSONObject tmpObject = null;
+            JSONArray arr = null;
+            JSONObject obj = null, tmpObj = null;
             preferredNameMap = new HashMap();
-            String studentId = "", lastName = "", firstName = "", middleName = "";
-            for(int i=0; i<arr.size(); i++){
-                obj = (JSONObject)arr.get(i);
-               studentId = obj.get("studentId").toString().trim();
-               lastName = obj.get("lastName").toString().trim();
-               firstName = obj.get("firstName").toString().trim();
-               middleName = obj.get("middleName").toString().trim();
-               if(middleName.length() > 0) {
-                   preferredNameMap.put(studentId.toLowerCase(), lastName + ", " + firstName + " "+middleName);       
-               } else {
-                   preferredNameMap.put(studentId.toLowerCase(), lastName + ", " +firstName);
-               } 
-           }
+            String studentId = "", lastName = "", firstName = "", middleName = "";           
+            JSONArray tmpArray = (JSONArray)jsonParser.parse(reader);
+              for(int j=0; j < tmpArray.size(); j++){
+                tmpObject = (JSONObject)tmpArray.get(j);
+                arr = (JSONArray)tmpObject.get("displayNames");               
+                for(int i=0; i<arr.size(); i++){
+                   obj = (JSONObject)arr.get(i);
+                   studentId = obj.get("studentId").toString().trim();
+                   lastName = obj.get("lastName").toString().trim();
+                   firstName = obj.get("firstName").toString().trim();
+                   middleName = obj.get("middleName").toString().trim();
+                   if(middleName.length() > 0) {
+                       preferredNameMap.put(studentId.toLowerCase(), lastName + ", " + firstName + " "+middleName);       
+                   } else {
+                       preferredNameMap.put(studentId.toLowerCase(), lastName + ", " +firstName);
+                   } 
+               }              
+            }
         } catch (Exception e) {
           e.printStackTrace();            
         }
@@ -478,15 +488,35 @@ public class makemarc {
         PrintWriter printWriter = null;
         try {
             GetMethod rdfGet = null;
-            String body = null;
-            rdfGet = new GetMethod("https://api.ucsd.edu:8243/display_name_info/v1/students/preferred_names");          
+            String body = null, data = null;
+            Format formatter;
+            formatter = new SimpleDateFormat("yyyy-MM-dd");
+            String todayDate = formatter.format(new java.util.Date()), startDate = "1900-01-01";
+            //rdfGet = new GetMethod("https://api.ucsd.edu:8243/display_name_info/v1/students/preferred_names");          
+            rdfGet = new GetMethod("https://api.ucsd.edu:8243/display_name_info/v1/students/preferred_names_by_date?date="+startDate+"&end_date="+todayDate+"&offset=0&limit=100&sort=pid");
             rdfGet.setRequestHeader("Accept", "application/json");
             rdfGet.setRequestHeader("Authorization", "Bearer "+token);
             body = Http.execute( rdfGet );
+            printWriter = new PrintWriter(new BufferedOutputStream(new FileOutputStream(filePath+"students_preferred_name.txt")));
+            printWriter.print("[");
             if(body != null) {
-                printWriter = new PrintWriter(new BufferedOutputStream(new FileOutputStream(filePath+"students_preferred_name.txt")));            
                 printWriter.print(body);
-            }          
+                JSONParser jsonParser = new JSONParser();
+                JSONObject obj = (JSONObject)jsonParser.parse(new StringReader(body));
+                int pageNumber = Integer.parseInt(obj.get("pageNumber").toString().trim());
+                int totalPages = Integer.parseInt(obj.get("totalPages").toString().trim());
+                int pageSize = Integer.parseInt(obj.get("pageSize").toString().trim());
+                for(int i = pageNumber + pageSize; i < totalPages*pageSize; i += pageSize) {
+                    rdfGet = new GetMethod("https://api.ucsd.edu:8243/display_name_info/v1/students/preferred_names_by_date?date="+startDate+"&end_date="+todayDate+"&limit=100&sort=pid&offset="+i);
+                    rdfGet.setRequestHeader("Accept", "application/json");
+                    rdfGet.setRequestHeader("Authorization", "Bearer "+token);
+                    data = Http.execute( rdfGet );
+                    if (data != null) {
+                        printWriter.print(","+data);
+                    }
+                }                
+            }
+            printWriter.print("]");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -543,7 +573,7 @@ public class makemarc {
         BufferedReader in = new BufferedReader(new FileReader(filePath+"full_merged_file.txt"));
         String lineIn = null;
         StringBuffer strBuffer = new StringBuffer();;      
-        int count = 0, min_range = 0, max_range = 400;
+        int count = 0, min_range = 0, max_range = 99;
         while(((lineIn = in.readLine()) != null) && !(lineIn.trim().equals(""))) {
             if (count >= min_range && count < max_range) {
                 if(count > min_range) {
@@ -552,8 +582,8 @@ public class makemarc {
                 strBuffer.append(lineIn.substring(0, 9).toUpperCase());
             }
             if (count == max_range) {
-                min_range = min_range + 400;
-                max_range = min_range + 400;
+                min_range = min_range + 99;
+                max_range = min_range + 99;
                 strBuffer.append("\n");
                 strBuffer.append(lineIn.substring(0, 9).toUpperCase());
             }
